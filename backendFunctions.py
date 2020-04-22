@@ -2,13 +2,13 @@ from selenium import webdriver
 import pandas as pd
 import backendFunctions as bf
 
-def readDataToDictionary(driverPath, websiteUrl):
+def readDataToDictionary(driver,websiteUrl):
     '''
     Holds the implementation for reading in the data from the website and creating a dictionary out of it
     that contains a list of the attributes passed on to it.
 
     INPUTS:
-    *driverPath - the file path in which directory the chrome driver is installed in
+    *driver - the driver that is being used
     *websiteUrl - the Trading View Website. If the website changes, every implementation used below will 
     most likely have to change as well.
     *attributeList - For the attribute/column list, the name of the attribute can be changed on the list, 
@@ -17,7 +17,6 @@ def readDataToDictionary(driverPath, websiteUrl):
     OUTPUTS:
     *d - a dictionary containing the information for each attribute in attributeList
     '''
-    driver = webdriver.Chrome(driverPath)
     driver.get(websiteUrl)
 
     names = driver.find_elements_by_class_name("tv-screener__description") 
@@ -42,3 +41,13 @@ def readDataToDictionary(driverPath, websiteUrl):
     #let's put the market data into a pandas dataframe
     d = {'Company': nameList,'Ticker Symbol': tickerList,'Last Price': priceList}
     return d
+
+def signInUser(driver,websiteUrl):
+    '''
+    Signs in the user based on the username and password given
+    '''
+    driver.get(websiteUrl)
+    signInButton = driver.find_element_by_class_name("tv-header__link.tv-header__link--signin.js-header__signin")
+    signInButton.click()
+    print("clicked")
+    return None
