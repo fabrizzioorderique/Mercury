@@ -14,7 +14,11 @@ TRADING_VIEW_STOCKS_URL = "https://www.tradingview.com/markets/stocks-usa/market
 TRADING_VIEW_MAIN_URL = "https://www.tradingview.com/"
 driver = webdriver.Chrome(CHROME_DRIVER_PATH) #main driver
 
-bf.signInUser(driver,TRADING_VIEW_MAIN_URL)
+#USER INPUT
+username = "fabriorder"
+password = "Swimming1!"
+
+bf.signInUser(driver,TRADING_VIEW_MAIN_URL,username,password)
 
 # d = bf.readDataToDictionary(CHROME_DRIVER_PATH,TRADING_VIEW_STOCKS_URL)
 # #let's put the market data into a pandas dataframe
