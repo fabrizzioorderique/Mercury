@@ -10,8 +10,9 @@ import backendFunctions as bf
 from time import sleep
 
 CHROME_DRIVER_PATH = "C:\\Users\\fabri\\miniconda3\\Lib\\site-packages\\selenium\\webdriver\\chrome\\chromedriver.exe"
-TRADING_VIEW_MAIN_URL = "https://www.tradingview.com/"
+TRADING_VIEW_URL = "https://www.tradingview.com/"
 YAHOO_FINANCE_URL = "https://finance.yahoo.com/"
+DIVIDER = "-----------------------------------------------------------"
 driver = webdriver.Chrome(CHROME_DRIVER_PATH) #main driver
 
 #USER INPUT
@@ -20,9 +21,12 @@ username = "jakeowens107@gmail.com"
 password = "Swimming1!"
 
 if bf.user_signed_in(driver,usersWebsite,username,password):
-    print("-----------------------------------------------------\nCollecting Data...")
+    print(DIVIDER+"\nCollecting Data...")
+    bf.readDataToDictionary(driver)
 else:
-    print("Sign in Error: Check internet connection and speed.")
+    print("Sign in Error: Check internet connection and speed.\n"+DIVIDER)
+    print("Use previously downloaded data? (y/n)") #if no connection, ask if they want to use stock list loaded in past instead. 
+
 
 #TODO Have the names of the stocks that users written on a file so that it is stored and read from there 
         #Have loaded stocks displayed and ask if they want to remove/add stocks to their list
