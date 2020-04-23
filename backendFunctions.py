@@ -1,28 +1,49 @@
 from selenium import webdriver 
-import pandas as pd
-import backendFunctions as bf
+from selenium.webdriver.support.ui import WebDriverWait
 from pynput.keyboard import Key,Controller
 from time import sleep
 
-def signInUser(driver,websiteUrl,USERNAME,PASSWORD):
+def user_signed_in(driver,websiteUrl,USERNAME,PASSWORD):
     '''
     Signs in the user based on the username and password given
     '''
     driver.get(websiteUrl) #load site
     keyboard = Controller() #make keyboard
-    WAIT_TIME = 2 #default wait time for pages to load in seconds
+    WAIT_TIME = 3 #default wait time for pages to load in seconds
 
-    signInButton = driver.find_element_by_class_name("tv-header__link.tv-header__link--signin.js-header__signin")
-    signInButton.click() #click sign in button
-    
-    sleep(WAIT_TIME)
-    keyboard.type(USERNAME)
-    keyboard.press(Key.tab)
-    keyboard.release(Key.tab)
-    keyboard.type(PASSWORD) 
-    keyboard.press(Key.enter)
-    keyboard.release(Key.enter) #wait for sign in screen to load and type in username and password and hit enter
-    return None
+    if websiteUrl == "https://finance.yahoo.com/":
+        try:
+            signInButton = driver.find_element_by_id("header-signin-link")
+            signInButton.click()
+            textArea = WebDriverWait(driver, 10*WAIT_TIME).until(lambda x: x.find_element_by_class_name("phone-no"))
+            textArea.send_keys(USERNAME) #types in username as soon as element is found within 30 seconds
+            keyboard.press(Key.enter)
+            keyboard.release(Key.enter)
+            print("username entered.")
+
+            textArea = WebDriverWait(driver, 5*WAIT_TIME).until(lambda x: x.find_element_by_id("login-passwd"))
+            textArea.send_keys(PASSWORD) #types in username as soon as element is found within 30 seconds
+            keyboard.press(Key.enter)
+            keyboard.release(Key.enter)
+            print("password entered.")
+        except:
+            driver.close()
+            return False
+    #testing functionality with other websites
+    elif(websiteUrl == "https://www.tradingview.com/"):
+        signInButton = driver.find_element_by_class_name("tv-header__link.tv-header__link--signin.js-header__signin")
+        signInButton.click() #click sign in button
+        
+        sleep(WAIT_TIME)
+        keyboard.type(USERNAME)
+        keyboard.press(Key.tab)
+        keyboard.release(Key.tab)
+        keyboard.type(PASSWORD) 
+        keyboard.press(Key.enter)
+        keyboard.release(Key.enter) #wait for sign in screen to load and type in username and password and hit enter
+    else:
+        return False #if website is not listed 
+    return True
 
 def readDataToDictionary(driver,websiteUrl):
     '''
@@ -39,6 +60,10 @@ def readDataToDictionary(driver,websiteUrl):
     OUTPUTS:
     *d - a dictionary containing the information for each attribute in attributeList
     '''
+    ##TODO 
+    ##For ticker symbol in list or name of company in list provided, go through and click search bar on
+    ##website and "type" in the name of each company the user wants. Then add element.text for each attribute
+    
     driver.get(websiteUrl)
 
     names = driver.find_elements_by_class_name("tv-screener__description") 
