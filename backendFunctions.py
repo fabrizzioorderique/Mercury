@@ -68,16 +68,20 @@ def readDataToDictionary(driver):
 
     watchListButton = WebDriverWait(driver,10*WAIT_TIME).until(lambda x: x.find_element_by_xpath("""//*[@id="data-util-col"]/section[1]/header/a"""))
     watchListButton.click()
-    print("Watch List Button Clicked.")
+    print("\nWatch List Button Clicked.")
 
     primaryButton = WebDriverWait(driver,10*WAIT_TIME).until(lambda x: x.find_element_by_xpath('//*[@id="Lead-3-Portfolios-Proxy"]/main/div[2]/section/ul/li[7]'))
     primaryButton.click()
+    print("\nPrimary List Selected.")
 
     #potential problem: Prices are changing as we collect data. perhaps lets try freezing the panel first?
+    sleep(WAIT_TIME)
     settingsButton = WebDriverWait(driver,10*WAIT_TIME).until(lambda x: x.find_element_by_xpath('//*[@id="Lead-3-Portfolios-Proxy"]/main/header/div[2]/div[2]/div[2]/div'))
     settingsButton.click()
+    print("\nsettings Button found.")
     streamingButton = WebDriverWait(driver,10*WAIT_TIME).until(lambda x: x.find_element_by_xpath('//*[@id="dropdown-menu"]/ul/li[3]/button'))
     streamingButton.click()
+    print("\nstreaming button found.")
 
     totalInvested = WebDriverWait(driver,10*WAIT_TIME).until(lambda x: x.find_element_by_xpath("""//*[@id="Lead-3-Portfolios-Proxy"]/main/div[1]/div[1]/div/div[1]/span""")).text
     print("\n",totalInvested)
@@ -90,15 +94,16 @@ def readDataToDictionary(driver):
     idx = 1
     while True:
         try:
+            sleep(WAIT_TIME*0.001)
             attributeLists[0].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[1]/a').text) #ticker
             sleep(WAIT_TIME*0.001)
             attributeLists[1].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[2]').text) #name
-            # sleep(WAIT_TIME*0.001)
-            # attributeLists[2].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[3]/span').text) #lastprice
-            # sleep(WAIT_TIME*0.001)
-            # attributeLists[3].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[4]/span').text) #change
-            # sleep(WAIT_TIME*0.001)
-            # attributeLists[4].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[5]/span').text) #%change
+            sleep(WAIT_TIME*0.001)
+            attributeLists[2].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[3]/span').text) #lastprice
+            sleep(WAIT_TIME*0.001)
+            attributeLists[3].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[4]/span').text) #change
+            sleep(WAIT_TIME*0.001)
+            attributeLists[4].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[5]/span').text) #%change
             # #attributeLists[5].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[6]/span').text) #trade date
             # attributeLists[5].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[7]').text) #shares
             # attributeLists[6].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[8]').text) #cost/share
