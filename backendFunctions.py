@@ -50,16 +50,6 @@ def user_signed_in(driver,websiteUrl,USERNAME,PASSWORD):
 def readDataToDictionary(driver):
     '''
     Holds the implementation for reading in the data from the website and creating a dictionary out of it
-    that contains a list of the attributes passed on to it.
-
-    INPUTS:
-    *driver - the driver that is being used
-    *websiteUrl - yahoo finance website
-    *attributeList - For the attribute/column list, the name of the attribute can be changed on the list, 
-    but the order in which each attribute is in MUST BE KEPT THE SAME
-
-    OUTPUTS:
-    *d - a dictionary containing the information for each attribute in attributeList
     '''
     ##Implemenation only for YAHOO FINANCE. To add other website, web url as input for checking
     ##Furthermore, this version only supports a single portfolio named "Primary" - simply add 
@@ -74,9 +64,7 @@ def readDataToDictionary(driver):
     primaryButton.click()
     print("\nPrimary List Selected.")
 
-    #potential problem: Prices are changing as we collect data. perhaps lets try freezing the panel first?
     sleep(WAIT_TIME)
-        #//*[@id="Lead-3-Portfolios-Proxy"]/main/header/div[2]/div[2]/div[2]/div
     settingsButton = WebDriverWait(driver,10*WAIT_TIME).until(lambda x: x.find_element_by_xpath('//*[@id="Lead-3-Portfolios-Proxy"]/main/header/div[2]/div/div[2]/div/span'))
     settingsButton.click()
     print("\nsettings Button found.")
@@ -121,9 +109,11 @@ def readDataToDictionary(driver):
             attributeLists[11].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[13]/span').text) #volume
         except:
             print("loop broken at index =",idx)
+            driver.close()
             break
         idx+=1
     for i in range(len(attributeNames)):
+        d[attributeNames[i]] = attributeLists[i]
         print("\n",attributeNames[i],"\n",attributeLists[i]) #prints out list of every attribute
 
     return d
