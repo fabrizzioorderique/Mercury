@@ -76,7 +76,8 @@ def readDataToDictionary(driver):
 
     #potential problem: Prices are changing as we collect data. perhaps lets try freezing the panel first?
     sleep(WAIT_TIME)
-    settingsButton = WebDriverWait(driver,10*WAIT_TIME).until(lambda x: x.find_element_by_xpath('//*[@id="Lead-3-Portfolios-Proxy"]/main/header/div[2]/div[2]/div[2]/div'))
+        #//*[@id="Lead-3-Portfolios-Proxy"]/main/header/div[2]/div[2]/div[2]/div
+    settingsButton = WebDriverWait(driver,10*WAIT_TIME).until(lambda x: x.find_element_by_xpath('//*[@id="Lead-3-Portfolios-Proxy"]/main/header/div[2]/div/div[2]/div/span'))
     settingsButton.click()
     print("\nsettings Button found.")
     streamingButton = WebDriverWait(driver,10*WAIT_TIME).until(lambda x: x.find_element_by_xpath('//*[@id="dropdown-menu"]/ul/li[3]/button'))
@@ -104,15 +105,21 @@ def readDataToDictionary(driver):
             attributeLists[3].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[4]/span').text) #change
             sleep(WAIT_TIME*0.001)
             attributeLists[4].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[5]/span').text) #%change
-            # #attributeLists[5].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[6]/span').text) #trade date
-            # attributeLists[5].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[7]').text) #shares
-            # attributeLists[6].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[8]').text) #cost/share
-            # attributeLists[7].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[9]/span').text) #total equity
+            sleep(WAIT_TIME*0.001)
+            attributeLists[5].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[7]').text) #shares
+            sleep(WAIT_TIME*0.001)
+            attributeLists[6].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[8]').text) #cost/share
+            sleep(WAIT_TIME*0.001)
+            attributeLists[7].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[9]/span').text) #total equity
+            # sleep(WAIT_TIME*0.001)
             # attributeLists[8].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[10]/span').text) #total change
+            # sleep(WAIT_TIME*0.001)
             # attributeLists[10].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[11]/span').text) #total %change
+            # sleep(WAIT_TIME*0.001)
             # attributeLists[11].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[12]').text) #Div/Share
-            # #divPayDates.append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[13]').text) #div pay data
+            # sleep(WAIT_TIME*0.001)
             # attributeLists[12].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[14]').text) #1 yr est
+            # sleep(WAIT_TIME*0.001)
             # attributeLists[13].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[15]/span').text) #volume
         except:
             print("loop broken at index =",idx)
@@ -122,48 +129,7 @@ def readDataToDictionary(driver):
         print("\n",attributeNames[i],"\n",attributeLists[i]) #prints out list of every attribute
 
     return d
-    # names = driver.find_elements_by_class_name("tv-screener__description") 
-    # tickers = driver.find_elements_by_class_name("tv-screener__symbol.apply-common-tooltip") 
-    # prices = []
-    # for index, ticker in enumerate(tickers):
-    #     xpathName = '//*[@id="js-screener-container"]/div[4]/table/tbody/tr['+str(index+1)+']/td[2]/span'
-    #     prices.append(driver.find_element_by_xpath(xpathName))
-    # #Makes the offical lists containing the text
-    # tickerList = []
-    # priceList = []
-    # nameList = []
-    # for ticker in tickers:
-    #     tickerList.append(ticker.text)
-    # for price in prices:
-    #     priceList.append(price.text)
-    # for name in names:
-    #     nameList.append(name.text)
 
-    # driver.close() #closes driver once done extracting data
-
-    # #let's put the market data into a pandas dataframe
-    # d = {'Company': nameList,'Ticker Symbol': tickerList,'Last Price': priceList}
-
-#testing
-# attributeNames = ["Ticker","Company Name","Last Price","Change","%Change","Date Bought","Shares","Cost/Share","Total Equity","Total Change","Total %Change","Div/Share","DivPayDate","1yr Est","Volume"]
-# attributeLists = []
-
-# tickers = attributeLists.append([]) 
-# attributeLists[0].append("hey")
-# attributeLists[0].append("hi")
-# names = attributeLists.append([])
-
-# lastPrices = []
-# changes = []
-# percentChanges = []
-# tradeDates = []
-# shares = []
-# costPerShare = []
-# totalEquities = []
-# totalChanges = []
-# totalPercentChanges = []
-# divPerShare = []
-# divPayDates = []
-# oneYearEsts = []
-# volumes = []
-# print(attributeLists)
+#testing:
+#attributeLists[5].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[6]/span').text) #trade date
+# #divPayDates.append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[13]').text) #div pay data
