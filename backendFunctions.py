@@ -54,8 +54,7 @@ def readDataToDictionary(driver):
 
     INPUTS:
     *driver - the driver that is being used
-    *websiteUrl - the Trading View Website. If the website changes, every implementation used below will 
-    most likely have to change as well.
+    *websiteUrl - yahoo finance website
     *attributeList - For the attribute/column list, the name of the attribute can be changed on the list, 
     but the order in which each attribute is in MUST BE KEPT THE SAME
 
@@ -63,10 +62,63 @@ def readDataToDictionary(driver):
     *d - a dictionary containing the information for each attribute in attributeList
     '''
     ##Implemenation only for YAHOO FINANCE. To add other website, web url as input for checking
+    ##Furthermore, this version only supports a single portfolio named "Primary" - simply add 
+    # neccesary parameter and if statements for addtional portfolio watchlists
+    d = {}
+    
     watchListButton = WebDriverWait(driver,10*WAIT_TIME).until(lambda x: x.find_element_by_xpath("""//*[@id="data-util-col"]/section[1]/header/a"""))
     watchListButton.click()
+    print("Watch List Button Clicked.")
 
+    primaryButton = WebDriverWait(driver,10*WAIT_TIME).until(lambda x: x.find_element_by_xpath('//*[@id="Lead-3-Portfolios-Proxy"]/main/div[2]/section/ul/li[7]'))
+    primaryButton.click()
 
+    totalInvested = WebDriverWait(driver,10*WAIT_TIME).until(lambda x: x.find_element_by_xpath("""//*[@id="Lead-3-Portfolios-Proxy"]/main/div[1]/div[1]/div/div[1]/span""")).text
+    print("\n",totalInvested)
+
+    tickers = [] 
+    names = []
+    lastPrices = []
+    changes = []
+    percentChanges = []
+    tradeDates = []
+    shares = []
+    costPerShare = []
+    totalEquities = []
+    totalChanges = []
+    totalPercentChanges = []
+    divPerShare = []
+    divPayDates = []
+    oneYearEsts = []
+    volumes = []
+    i = 1
+    while True:
+        try:
+            tickers.append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(i)+']/td[1]/a').text)
+            names.append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(i)+']/td[2]').text)
+            lastPrices.append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(i)+']/td[3]/span').text)
+            changes.append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(i)+']/td[4]/span').text)
+            percentChanges.append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(i)+']/td[5]/span').text)
+            tradeDates.append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(i)+']/td[6]/span').text)
+            shares.append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(i)+']/td[7]').text)
+            costPerShare.append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(i)+']/td[8]').text)
+            totalEquities.append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(i)+']/td[9]/span').text)
+            totalChanges.append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(i)+']/td[10]/span').text)
+            totalPercentChanges.append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(i)+']/td[11]/span').text)
+            divPerShare.append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(i)+']/td[12]').text)
+            #divPayDates.append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(i)+']/td[13]').text)
+            oneYearEsts.append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(i)+']/td[14]').text)
+            volumes.append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(i)+']/td[15]/span').text)
+        except:
+            break
+        i+=1
+    print(tickers)
+    print(names)
+    print(lastPrices)
+    print(changes)
+    print(percentChanges)
+
+    return d
     # names = driver.find_elements_by_class_name("tv-screener__description") 
     # tickers = driver.find_elements_by_class_name("tv-screener__symbol.apply-common-tooltip") 
     # prices = []
@@ -88,4 +140,3 @@ def readDataToDictionary(driver):
 
     # #let's put the market data into a pandas dataframe
     # d = {'Company': nameList,'Ticker Symbol': tickerList,'Last Price': priceList}
-    return None #return dictionary here

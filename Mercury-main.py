@@ -19,12 +19,13 @@ driver = webdriver.Chrome(CHROME_DRIVER_PATH) #main driver
 usersWebsite = YAHOO_FINANCE_URL
 username = "jakeowens107@gmail.com"
 password = "Swimming1!"
+#portfolio = "Primary"
 
 if bf.user_signed_in(driver,usersWebsite,username,password):
     print(DIVIDER+"\nCollecting Data...")
-    bf.readDataToDictionary(driver)
+    print(bf.readDataToDictionary(driver)) #prints the dictionary returned for testing purposes
 else:
-    print("Sign in Error: Check internet connection and speed.\n"+DIVIDER)
+    print(DIVIDER+"\nSign In Error: Check internet connection and speed.")
     print("Use previously downloaded data? (y/n)") #if no connection, ask if they want to use stock list loaded in past instead. 
 
 
