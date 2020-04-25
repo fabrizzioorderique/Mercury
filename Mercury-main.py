@@ -4,17 +4,14 @@
 ### @author Piero Orderique                                                                 ###
 ###############################################################################################
 
-from selenium import webdriver 
+# from selenium import webdriver 
 import pandas as pd
 import backendFunctions as bf
-from time import sleep
 
-CHROME_DRIVER_PATH = "C:\\Users\\fabri\\miniconda3\\Lib\\site-packages\\selenium\\webdriver\\chrome\\chromedriver.exe"
 PORTFOLIO_DATA_STORE_LOC = "C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortofilo.csv"
 TRADING_VIEW_URL = "https://www.tradingview.com/"
 YAHOO_FINANCE_URL = "https://finance.yahoo.com/"
 DIVIDER = "-----------------------------------------------------------"
-driver = webdriver.Chrome(CHROME_DRIVER_PATH) #main driver
 
 #USER INPUT
 usersWebsite = YAHOO_FINANCE_URL
@@ -22,9 +19,9 @@ username = "jakeowens107@gmail.com"
 password = "Swimming1!"
 #portfolio = "Primary"
 
-if bf.user_signed_in(driver,usersWebsite,username,password):
+if bf.user_signed_in(usersWebsite,username,password):
     print(DIVIDER+"\nCollecting Data...")
-    dict_main = bf.readDataToDictionary(driver) #stores the dictionary returned for testing purposes
+    dict_main = bf.readDataToDictionary() #stores the dictionary returned for testing purposes
     
     df_main = pd.DataFrame(dict_main)
     df_main.to_csv(PORTFOLIO_DATA_STORE_LOC)

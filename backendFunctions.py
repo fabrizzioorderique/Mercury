@@ -3,9 +3,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 from pynput.keyboard import Key,Controller
 from time import sleep
 
-WAIT_TIME = 3 #default wait time for pages to load in seconds
+CHROME_DRIVER_PATH = "C:\\Users\\fabri\\miniconda3\\Lib\\site-packages\\selenium\\webdriver\\chrome\\chromedriver.exe"
+driver = webdriver.Chrome(CHROME_DRIVER_PATH) #main driver
 
-def user_signed_in(driver,websiteUrl,USERNAME,PASSWORD):
+WAIT_TIME = 3 #default wait time for pages to load in seconds
+totalInvested = "Data not collected."
+
+def user_signed_in(websiteUrl,USERNAME,PASSWORD):
     '''
     Signs in the user based on the username and password given
     '''
@@ -47,7 +51,7 @@ def user_signed_in(driver,websiteUrl,USERNAME,PASSWORD):
         return False #if website is not listed 
     return True
 
-def readDataToDictionary(driver):
+def readDataToDictionary():
     '''
     Holds the implementation for reading in the data from the website and creating a dictionary out of it
     '''
@@ -121,3 +125,6 @@ def readDataToDictionary(driver):
         print("\n",attributeNames[i],"\n",attributeLists[i]) #prints out list of every attribute
 
     return d
+
+def getTotalInvested():
+    return totalInvested
