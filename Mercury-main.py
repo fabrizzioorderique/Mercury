@@ -30,6 +30,7 @@ if bf.user_signed_in(driver,usersWebsite,username,password):
     df_main.to_csv(PORTFOLIO_DATA_STORE_LOC)
     pd.set_option("display.max_rows", None, "display.max_columns", None)
     print(df_main)  # makes data frame and diplays it 
+    df_main.head()
 else:
     print(DIVIDER+"\nSign In Error: Check internet connection and speed.")
     print("Use previously downloaded data? (y/n)") #if no connection, ask if they want to use stock list loaded in past instead. 
