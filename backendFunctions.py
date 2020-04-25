@@ -55,22 +55,26 @@ def readDataToDictionary(driver):
     ##Furthermore, this version only supports a single portfolio named "Primary" - simply add 
     # neccesary parameter and if statements for addtional portfolio watchlists
     d = {}
+    try:
+        watchListButton = WebDriverWait(driver,10*WAIT_TIME).until(lambda x: x.find_element_by_xpath("""//*[@id="data-util-col"]/section[1]/header/a"""))
+        watchListButton.click()
+        print("\nWatch List Button Clicked.")
 
-    watchListButton = WebDriverWait(driver,10*WAIT_TIME).until(lambda x: x.find_element_by_xpath("""//*[@id="data-util-col"]/section[1]/header/a"""))
-    watchListButton.click()
-    print("\nWatch List Button Clicked.")
+        primaryButton = WebDriverWait(driver,10*WAIT_TIME).until(lambda x: x.find_element_by_xpath('//*[@id="Lead-3-Portfolios-Proxy"]/main/div[2]/section/ul/li[7]'))
+        primaryButton.click()
+        print("\nPrimary List Selected.")
 
-    primaryButton = WebDriverWait(driver,10*WAIT_TIME).until(lambda x: x.find_element_by_xpath('//*[@id="Lead-3-Portfolios-Proxy"]/main/div[2]/section/ul/li[7]'))
-    primaryButton.click()
-    print("\nPrimary List Selected.")
-
-    sleep(WAIT_TIME)
-    settingsButton = WebDriverWait(driver,10*WAIT_TIME).until(lambda x: x.find_element_by_xpath('//*[@id="Lead-3-Portfolios-Proxy"]/main/header/div[2]/div/div[2]/div/span'))
-    settingsButton.click()
-    print("\nsettings Button found.")
-    streamingButton = WebDriverWait(driver,10*WAIT_TIME).until(lambda x: x.find_element_by_xpath('//*[@id="dropdown-menu"]/ul/li[3]/button'))
-    streamingButton.click()
-    print("\nstreaming button found.")
+        sleep(WAIT_TIME)
+        settingsButton = WebDriverWait(driver,10*WAIT_TIME).until(lambda x: x.find_element_by_xpath('//*[@id="Lead-3-Portfolios-Proxy"]/main/header/div[2]/div/div[2]/div/span'))
+        settingsButton.click()
+        print("\nsettings Button found.")
+        streamingButton = WebDriverWait(driver,10*WAIT_TIME).until(lambda x: x.find_element_by_xpath('//*[@id="dropdown-menu"]/ul/li[3]/button'))
+        streamingButton.click()
+        print("\nstreaming button found.")
+    except:
+        print("\nButtons were not found. Empty Dictionary Returned.")
+        driver.close()
+        return d
 
     totalInvested = WebDriverWait(driver,10*WAIT_TIME).until(lambda x: x.find_element_by_xpath("""//*[@id="Lead-3-Portfolios-Proxy"]/main/div[1]/div[1]/div/div[1]/span""")).text
     print("\n",totalInvested)
@@ -117,8 +121,3 @@ def readDataToDictionary(driver):
         print("\n",attributeNames[i],"\n",attributeLists[i]) #prints out list of every attribute
 
     return d
-
-#testing:
-#attributeLists[5].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[6]/span').text) #trade date
-#divPayDates.append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[13]').text) #div pay data
-#attributeLists[10].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[12]/text()')) #Div/Share
