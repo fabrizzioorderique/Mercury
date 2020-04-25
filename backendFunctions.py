@@ -4,9 +4,9 @@ from pynput.keyboard import Key,Controller
 from time import sleep
 
 CHROME_DRIVER_PATH = "C:\\Users\\fabri\\miniconda3\\Lib\\site-packages\\selenium\\webdriver\\chrome\\chromedriver.exe"
-driver = webdriver.Chrome(CHROME_DRIVER_PATH) #main driver
 
 WAIT_TIME = 3 #default wait time for pages to load in seconds
+driver = webdriver.Chrome(CHROME_DRIVER_PATH) #main driver
 totalInvested = "Data not collected."
 
 def user_signed_in(websiteUrl,USERNAME,PASSWORD):
