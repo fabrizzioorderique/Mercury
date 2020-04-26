@@ -1,5 +1,5 @@
 ###############################################################################################
-###                                      PROJECT MERCURY                                    ###
+###                                   PROJECT MERCURY GUI                                   ###
 ###                                                                                         ###
 ### @author Piero Orderique                                                                 ###
 ###############################################################################################
@@ -7,16 +7,15 @@
 import pandas as pd
 from time import sleep
 from tkinter import Tk, Label, Entry, PhotoImage, Button, filedialog, messagebox
+from tkinter.ttk import Progressbar
 
-PORTFOLIO_DATA_STORE_LOC = "C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortofilo.csv"
-TRADING_VIEW_URL = "https://www.tradingview.com/"
 YAHOO_FINANCE_URL = "https://finance.yahoo.com/"
-DIVIDER = "-----------------------------------------------------------"
 
 #USER INPUT
 usersWebsite = YAHOO_FINANCE_URL
 username = "jakeowens107@gmail.com"
 password = "Swimming1!"
+filePath = ""
 #portfolio = "Primary"
 
 print("WHATTTTTT")
@@ -69,25 +68,66 @@ def directoryPage():
     #window
     directoryPage = Tk()
     directoryPage.title('Select Directory Page')
-    directoryPage.geometry('385x50')
-    directoryPage.config(bg='white')
+    directoryPage.geometry('440x50')
     #window Label
     instructions = "Select a Directory to Store Data:"
     titleLabel = Label(directoryPage, text=instructions, font=("Times New Roman", 14),bg='white',fg='black') #create object
     titleLabel.grid(column = 0, row=0, padx=3,pady=5) #place(relx=0.09,rely=0.2) 
     #path selector button
     def chooseDir():
+        global filePath
         filePath = filedialog.askdirectory()
-        filePath += "/myPorfolio.csv"
+        filePath += "/myPortfolio.csv"
         dirButton.destroy()
         titleLabel.config(font=("Times New Roman",9),text="Market Data will be stored in\n"+filePath)
         def nextButton():
             directoryPage.destroy()
+            loadDataPage()
         nextButton = Button(directoryPage,text="Next >",font=("Arial",9),command=nextButton)
         nextButton.grid(column=1,row=0,padx=10,pady=5)
     dirButton = Button(directoryPage,text="Choose Directory",font=("Arial",9),command=chooseDir)
     dirButton.grid(column=1,row=0,padx=10,pady=5)
 
+def loadDataPage():
+    #window
+    loadingPage = Tk()
+    loadingPage.title('Data Collection Page')
+    loadingPage.geometry('385x105')
+    loadingPage.config(bg=DARK_BLUE)
+    #window label
+    titleLabel = Label(loadingPage, text="Loading Data...", font=("Times New Roman Bold", 14),bg=BRIGHT_ORANGE,fg='black') #create object
+    titleLabel.grid(column = 0, row=0, padx=12,pady=10)
+    #progress bar
+    loadingBar = Progressbar(loadingPage, length=300)
+    loadingBar.grid(column=0,row=1,padx=12,pady=10)
+    def bar():
+        from time import sleep
+        global filePath
+        loadingBar['value']=20
+        sleep(1)
+        loadingBar['value']=50
+        import backendFunctions as bf
+        if bf.user_signed_in(usersWebsite,username,password):
+            sleep(1)
+            loadingBar['value']=80
+            dict_main = bf.readDataToDictionary()           
+            sleep(1)
+            loadingBar['value']=100
+            sleep(1)
+            #makes and saves df
+            if len(dict_main != 0):
+                df_main = pd.DataFrame(dict_main)
+                df_main.to_csv(filePath)
+                ##GO TO PORTFOLIO WINDOW
+                pd.set_option("display.max_rows", None, "display.max_columns", None)
+                print(df_main)  
+            else:
+                loadingPage.destroy()
+                messagebox.askretrycancel("Data Loading Error.")
+        else:
+            loadingPage.destroy()
+            messagebox.askretrycancel("Sign in Error","Data Collection Failed.")
+    bar()
 
 startSignInPage()
 # if bf.user_signed_in(driver,usersWebsite,username,password):

@@ -30,6 +30,7 @@ def firstExample():
     def signInClicked():
         result = "Signing you in " + txt.get() + "!" #gets what the user typed in !
         lbl.configure(text=result) #changes label name
+
     btn = Button(window, text="Sign In", command = signInClicked) 
     btn.grid(column=1, row=1) 
 
