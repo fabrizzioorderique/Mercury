@@ -4,6 +4,7 @@ from tkinter import messagebox
 from tkinter import filedialog
 from tkinter.ttk import *
 from time import sleep
+import pandas as pd
 
 def firstExample():
     #creates our window
@@ -91,4 +92,7 @@ def secondExample():
 
     window.mainloop()
 
-firstExample()
+# firstExample()
+df = pd.read_csv("C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortofilo.csv")
+portfolio_display_df = df[['Ticker','Last Price']]
+print(portfolio_display_df)

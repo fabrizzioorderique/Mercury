@@ -6,7 +6,7 @@
 
 import pandas as pd
 from time import sleep
-from tkinter import Tk, Label, Entry, PhotoImage, Button, filedialog, messagebox
+from tkinter import Tk, Label, Entry, PhotoImage, Button, filedialog, messagebox, scrolledtext, INSERT
 from tkinter.ttk import Progressbar
 
 YAHOO_FINANCE_URL = "https://finance.yahoo.com/"
@@ -115,12 +115,11 @@ def loadDataPage():
             loadingBar['value']=100
             sleep(1)
             #makes and saves df
-            if len(dict_main != 0):
+            if len(dict_main) != 0:
                 df_main = pd.DataFrame(dict_main)
                 df_main.to_csv(filePath)
-                ##GO TO PORTFOLIO WINDOW
-                pd.set_option("display.max_rows", None, "display.max_columns", None)
-                print(df_main)  
+                loadingPage.destroy()
+                portfolioPage()
             else:
                 loadingPage.destroy()
                 messagebox.askretrycancel("Data Loading Error.")
@@ -129,7 +128,33 @@ def loadDataPage():
             messagebox.askretrycancel("Sign in Error","Data Collection Failed.")
     bar()
 
+def portfolioPage():
+    #window
+    portfolioWindow = Tk()
+    portfolioWindow.title('Portfolio Page')
+    portfolioWindow.geometry('300x650')
+    portfolioWindow.config(bg='light blue')
+
+    #labels
+    lbl1 = Label(text="Select a chart:", font=("Times New Roman",12),bg=BRIGHT_ORANGE)
+    lbl2 = Label(text="My Stocks Portfolio", font=("Times New Roman",12),bg=BRIGHT_ORANGE)
+    lbl1.place(relx=0.05,rely=0.01)
+    lbl2.place(relx=0.05,rely=0.15)
+
+    #display stocks list
+    scroll = scrolledtext.ScrolledText(portfolioWindow,width=31,height=30)
+    scroll.place(relx=0.05,rely=0.20)
+    global filePath
+    print(filePath)
+    df = pd.read_csv(filePath)
+    portfolio_display_df = df[['Ticker','Last Price']]
+    scroll.insert(INSERT,portfolio_display_df.to_string())
+
+    portfolioWindow.mainloop()
+
 startSignInPage()
+# portfolioPage()
+
 # if bf.user_signed_in(driver,usersWebsite,username,password):
 #     print(DIVIDER+"\nCollecting Data...")
 #     dict_main = bf.readDataToDictionary(driver) #stores the dictionary returned for testing purposes
