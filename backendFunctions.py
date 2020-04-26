@@ -80,6 +80,7 @@ def readDataToDictionary():
         driver.close()
         return d
 
+    global totalInvested
     totalInvested = WebDriverWait(driver,10*WAIT_TIME).until(lambda x: x.find_element_by_xpath("""//*[@id="Lead-3-Portfolios-Proxy"]/main/div[1]/div[1]/div/div[1]/span""")).text
     print("\n",totalInvested)
     
