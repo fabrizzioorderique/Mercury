@@ -116,9 +116,15 @@ def loadDataPage():
             #makes and saves df
             if len(dict_main) != 0:
                 df_main = pd.DataFrame(dict_main)
+                #pre analysis setup:
+                for attribute in df_main.columns:
+                    if attribute not in ['Ticker','Company Name']:
+                        df_main[attribute] = df_main[attribute].str.replace(',','').str.replace("M",'').str.replace("%",'').str.replace('+','').astype(float)
                 df_main.to_csv(filePath)
+                pd.set_option("display.max_rows", None, "display.max_columns", None)
+                print(df_main)
                 loadingPage.destroy()
-                portfolioPage(filePath)
+                portfolioPage(df_main)
             else:
                 loadingPage.destroy()
                 messagebox.askretrycancel("Data Loading Error.")
@@ -127,13 +133,7 @@ def loadDataPage():
             messagebox.askretrycancel("Sign in Error","Data Collection Failed.")
     bar()
 
-def portfolioPage(filePath):
-    #pre analysis setup:
-    df = pd.read_csv(filePath)
-    def convertDataToNumerical(df, attributeList):
-        for attribute in attributeList:
-            df[attribute] = df[attribute].str.replace(',','').str.replace("M",'').astype(float)
-    convertDataToNumerical(df,['Last Price','1yr Est','Volume'])
+def portfolioPage(df):
     #window
     portfolioWindow = Tk()
     portfolioWindow.title('Portfolio Page')
@@ -151,27 +151,33 @@ def portfolioPage(filePath):
     scroll = scrolledtext.ScrolledText(portfolioWindow,width=22,height=19)
     scroll.place(relx=0.65,rely=0.1)
     scroll.insert(INSERT,portfolio_display_df.to_string())
+    scroll.config(state='disabled')
 
     #choose/display chart
-    combo = Combobox(portfolioWindow,values=['Select a Chart','Stocks by Price'],state="readonly")
+    comboValues = ['Select a Chart','Stocks by Price','Stocks by Total Equity']
+    combo = Combobox(portfolioWindow,values=comboValues,state="readonly")
     combo.place(relx=0.05,rely=0.1)
     combo.current(0)
     def comboFunc(event):
+        import matplotlib.pyplot as plt
+        from time import sleep
         selection = combo.get()
         if selection == 'Stocks by Price':
-            import matplotlib.pyplot as plt
-            portfolioWindow.destroy()
-            # df = pd.read_csv("C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortofilo.csv") #pd.read_csv(filePath)
-            # df['Last Price'] = df['Last Price'].map(lambda x: x.replace(",",""))
-            # df["Last Price"] = pd.to_numeric(df["Last Price"], downcast="float")
             df.plot(kind='bar',x='Ticker',y='Last Price')
-            plt.show()
-            print("plotted.")
+        elif selection == 'Stocks by Total Equity':
+            df.plot(kind='bar',x='Ticker',y='Total Equity')
+        portfolioWindow.destroy()
+        sleep(1)
+        plt.show()
+        sleep(1)
+        portfolioPage(df)
+        print("plotted.")
+
     combo.bind("<<ComboboxSelected>>", comboFunc)
     portfolioWindow.mainloop()
-
+ 
 # startSignInPage()
-portfolioPage("C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortofilo.csv")
+portfolioPage(pd.read_csv("C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortfolio.csv"))
 
 #TODO Have the names of the stocks that users written on a file so that it is stored and read from there 
         #Have loaded stocks displayed and ask if they want to remove/add stocks to their list
