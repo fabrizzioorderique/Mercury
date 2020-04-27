@@ -180,6 +180,8 @@ def portfolioPage(df):
             df.plot(kind='bar',x='Ticker',y='Total Equity', legend=True, ax=ax) 
             #TODO
             #USE SUBSTRINGS AND INDEX OF? FROM SELECTION TO DETERMINE PLOT
+            #put icons and logos in a folder and have them read from there. Save myPortfolio to a local folder named Data
+                #use os if needed to get working directory
 
     combo.bind("<<ComboboxSelected>>", comboFunc)
     portfolioWindow.mainloop()
