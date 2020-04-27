@@ -5,7 +5,7 @@
 ###############################################################################################
 
 import pandas as pd
-from tkinter import Tk, Label, Entry, PhotoImage, Button, filedialog, messagebox, scrolledtext, INSERT
+from tkinter import Tk, Label, Entry, PhotoImage, Button, filedialog, messagebox, scrolledtext, Text,INSERT
 from tkinter.ttk import Progressbar, Combobox
 
 YAHOO_FINANCE_URL = "https://finance.yahoo.com/"
@@ -137,41 +137,49 @@ def portfolioPage(df):
     #window
     portfolioWindow = Tk()
     portfolioWindow.title('Portfolio Page')
-    portfolioWindow.geometry('600x350')
-    portfolioWindow.config(bg='light blue')
+    portfolioWindow.geometry('1120x700')
+    portfolioWindow.config(bg=DARK_BLUE)
+    portfolioWindow.wm_iconbitmap('mercuryLogoIco.ico')
 
     #labels
-    lbl1 = Label(text="Select a chart:", font=("Times New Roman",12),bg=BRIGHT_ORANGE)
-    lbl2 = Label(text="My Stocks Portfolio", font=("Times New Roman",12),bg=BRIGHT_ORANGE)
-    lbl1.place(relx=0.05,rely=0.01)
-    lbl2.place(relx=0.65,rely=0.01)
+    lbl_main = Label(text="Your Portfolio", font=("Times New Roman",42),bg=BRIGHT_ORANGE)
+    lbl2 = Label(text="Select a chart:", font=("Helvetica",12),bg=BRIGHT_ORANGE)
+    lbl3 = Label(text="My Stocks", font=("Times New Roman",20),bg=BRIGHT_ORANGE)
+    lbl_main.place(relx=0.05,rely=0.03)
+    lbl2.place(relx=0.05,rely=0.16)
+    lbl3.place(relx=0.73,rely=0.08)
 
     #show stocks list
-    portfolio_display_df = df[['Ticker','Last Price']]
-    scroll = scrolledtext.ScrolledText(portfolioWindow,width=22,height=19)
-    scroll.place(relx=0.65,rely=0.1)
+    portfolio_display_df = df[['Ticker','Last Price','Shares']]   
+    scroll = scrolledtext.ScrolledText(portfolioWindow,width=30,height=34)
+    scroll.place(relx=0.73,rely=0.15)
     scroll.insert(INSERT,portfolio_display_df.to_string())
     scroll.config(state='disabled')
 
     #choose/display chart
-    comboValues = ['Select a Chart','Stocks by Price','Stocks by Total Equity']
+    comboValues = ['Select a Chart','Stocks by Last Price','Stocks by Total Equity']
     combo = Combobox(portfolioWindow,values=comboValues,state="readonly")
-    combo.place(relx=0.05,rely=0.1)
+    combo.place(relx=0.15,rely=0.16)
     combo.current(0)
     def comboFunc(event):
         import matplotlib.pyplot as plt
-        from time import sleep
+        from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
         selection = combo.get()
-        if selection == 'Stocks by Price':
-            df.plot(kind='bar',x='Ticker',y='Last Price')
+        #starts embedded plot configuration
+        figure = plt.Figure(figsize=(8,5.8), dpi=90)
+        figure.subplots_adjust(top = 0.94)
+        ax = figure.add_subplot(111)
+        ax.set_title(selection)
+        chart_type = FigureCanvasTkAgg(figure, portfolioWindow)
+        chart_type.get_tk_widget().place(relx=0.05,rely=0.2)
+        toolbar = NavigationToolbar2Tk(chart_type, portfolioWindow)
+        toolbar.update()
+        if selection == 'Stocks by Last Price':
+            df.plot(kind='bar',x='Ticker',y='Last Price', legend=True, ax=ax)
         elif selection == 'Stocks by Total Equity':
-            df.plot(kind='bar',x='Ticker',y='Total Equity')
-        portfolioWindow.destroy()
-        sleep(1)
-        plt.show()
-        sleep(1)
-        portfolioPage(df)
-        print("plotted.")
+            df.plot(kind='bar',x='Ticker',y='Total Equity', legend=True, ax=ax) 
+            #TODO
+            #USE SUBSTRINGS AND INDEX OF? FROM SELECTION TO DETERMINE PLOT
 
     combo.bind("<<ComboboxSelected>>", comboFunc)
     portfolioWindow.mainloop()
