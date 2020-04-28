@@ -40,7 +40,7 @@ def startSignInPage():
     titleLabel.grid(column=0, row=0, padx=13,pady=10)
 
     #logo
-    mercuryLogo = PhotoImage(file = "C:\\Users\\fabri\\OneDrive\\Documents\\web-bot\\mercuryLogo.png")
+    mercuryLogo = PhotoImage(file = 'images/mercuryLogo.png')
     logoLbl = Label(image=mercuryLogo)
     logoLbl.place(relx=0.1, rely=0.2)
 
@@ -145,7 +145,7 @@ def portfolioPage(df):
     portfolioWindow.title('Portfolio Page')
     portfolioWindow.geometry('1120x700')
     portfolioWindow.config(bg=DARK_BLUE)
-    portfolioWindow.wm_iconbitmap('mercuryLogoIco.ico')
+    portfolioWindow.wm_iconbitmap('images/mercuryLogoIco.ico')
 
     #labels
     lbl_main = Label(text="Your Portfolio", font=("Times New Roman",42),bg=BRIGHT_ORANGE)
@@ -193,7 +193,7 @@ def portfolioPage(df):
             df.plot(kind=kind,x=xLabel,y=yLabel, legend=True, ax=ax)
 
     combo.bind("<<ComboboxSelected>>", comboFunc)
-    # portfolioWindow.mainloop()
+    portfolioWindow.mainloop()
  
 app = MercuryApp()
 # startSignInPage()
@@ -206,3 +206,4 @@ app = MercuryApp()
     #put icons and logos in a folder and have them read from there. Save myPortfolio to a local folder named Data
     #use os if needed to get working directory
     #add total invested on portfolio chart
+    #different portfolio functionality?
