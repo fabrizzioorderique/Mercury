@@ -17,7 +17,7 @@ password = "Swimming1!"
 filePath = ""
 #portfolio = "Primary"
 
-print("WHATTTTTT")
+print("App Started.\n")
 #import backendFunctions as bf # import when ready to call funcitons!
 
 #################   MAIN GUI    ##################
@@ -77,6 +77,7 @@ def directoryPage():
         global filePath
         filePath = filedialog.askdirectory()
         filePath += "/myPortfolio.csv"
+        print("Directory chosen: ",filePath) ###
         dirButton.destroy()
         titleLabel.config(font=("Times New Roman",9),text="Market Data will be stored in\n"+filePath)
         def nextButton():
@@ -102,6 +103,7 @@ def loadDataPage():
     def bar():
         from time import sleep
         global filePath
+        print("Dircectory from global :",filePath)
         loadingBar['value']=20
         sleep(1)
         loadingBar['value']=50
@@ -120,6 +122,7 @@ def loadDataPage():
                 for attribute in df_main.columns:
                     if attribute not in ['Ticker','Company Name']:
                         df_main[attribute] = df_main[attribute].str.replace(',','').str.replace("M",'').str.replace("%",'').str.replace('+','').astype(float)
+                print("Dircectory that df is being saved to :",filePath)
                 df_main.to_csv(filePath)
                 pd.set_option("display.max_rows", None, "display.max_columns", None)
                 print(df_main)
@@ -143,7 +146,7 @@ def portfolioPage(df):
 
     #labels
     lbl_main = Label(text="Your Portfolio", font=("Times New Roman",42),bg=BRIGHT_ORANGE)
-    lbl2 = Label(text="Select a chart:", font=("Helvetica",12),bg=BRIGHT_ORANGE)
+    lbl2 = Label(text="Choose Display:", font=("Times New Roman",12),bg=BRIGHT_ORANGE)
     lbl3 = Label(text="My Stocks", font=("Times New Roman",20),bg=BRIGHT_ORANGE)
     lbl_main.place(relx=0.05,rely=0.03)
     lbl2.place(relx=0.05,rely=0.16)
@@ -157,37 +160,44 @@ def portfolioPage(df):
     scroll.config(state='disabled')
 
     #choose/display chart
-    comboValues = ['Select a Chart','Stocks by Last Price','Stocks by Total Equity']
-    combo = Combobox(portfolioWindow,values=comboValues,state="readonly")
-    combo.place(relx=0.15,rely=0.16)
+    comboValues = ['Select a Chart','BAR| Stocks by Last Price','BAR| Stocks by Total Equity']
+    combo = Combobox(portfolioWindow,values=comboValues,state="readonly",width=40)
+    combo.place(relx=0.16,rely=0.16)
     combo.current(0)
     def comboFunc(event):
         import matplotlib.pyplot as plt
         from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+        #extracts info from presented selection
         selection = combo.get()
+        chartTitle = selection[selection.index(" ")+1:]
+        kind = selection[:selection.index("|")].lower()
+        xLabel = chartTitle[:chartTitle.index(" ")]
+        if xLabel == "Stocks":
+            xLabel = "Ticker"
+        yLabel = chartTitle[chartTitle.index("by ")+3:]
         #starts embedded plot configuration
         figure = plt.Figure(figsize=(8,5.8), dpi=90)
         figure.subplots_adjust(top = 0.94)
         ax = figure.add_subplot(111)
-        ax.set_title(selection)
+        ax.set_title(chartTitle)
         chart_type = FigureCanvasTkAgg(figure, portfolioWindow)
         chart_type.get_tk_widget().place(relx=0.05,rely=0.2)
         toolbar = NavigationToolbar2Tk(chart_type, portfolioWindow)
-        toolbar.update()
-        if selection == 'Stocks by Last Price':
-            df.plot(kind='bar',x='Ticker',y='Last Price', legend=True, ax=ax)
-        elif selection == 'Stocks by Total Equity':
-            df.plot(kind='bar',x='Ticker',y='Total Equity', legend=True, ax=ax) 
-            #TODO
-            #USE SUBSTRINGS AND INDEX OF? FROM SELECTION TO DETERMINE PLOT
-            #put icons and logos in a folder and have them read from there. Save myPortfolio to a local folder named Data
-                #use os if needed to get working directory
+        toolbar.place_configure()
+        if selection != 'Select a Chart':
+            df.plot(kind=kind,x=xLabel,y=yLabel, legend=True, ax=ax)
+        #TODO
+        #put icons and logos in a folder and have them read from there. Save myPortfolio to a local folder named Data
+            #use os if needed to get working directory
 
     combo.bind("<<ComboboxSelected>>", comboFunc)
     portfolioWindow.mainloop()
  
 # startSignInPage()
 portfolioPage(pd.read_csv("C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortfolio.csv"))
+# selection = 'Stocks by Last Price'
+
+
 
 #TODO Have the names of the stocks that users written on a file so that it is stored and read from there 
         #Have loaded stocks displayed and ask if they want to remove/add stocks to their list
