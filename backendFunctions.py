@@ -84,7 +84,7 @@ def readDataToDictionary():
     totalInvested = WebDriverWait(driver,10*WAIT_TIME).until(lambda x: x.find_element_by_xpath("""//*[@id="Lead-3-Portfolios-Proxy"]/main/div[1]/div[1]/div/div[1]/span""")).text
     print("\n",totalInvested)
     
-    attributeNames = ["Ticker","Company Name","Last Price","Change","%Change","Shares","Cost/Share","Total Equity","Total Change","Total %Change","1yr Est","Volume"]
+    attributeNames = ["Ticker","Company Name","Last Price","Change","%Change","Shares","Cost/Share","Total Equity","Total Change","Total %Change","1yr Est","Volume [M]"]
     attributeLists = []
     for att in attributeNames:
         attributeLists.append([]) #appends and empty list for every attribute 
@@ -129,3 +129,6 @@ def readDataToDictionary():
 
 def getTotalInvested():
     return totalInvested
+
+#TODO
+    #once retry buttons enabled on main app, take out sleep() methods and see if there is a difference
