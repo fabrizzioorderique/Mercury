@@ -1,23 +1,19 @@
 ###############################################################################################
-###                                      PROJECT MERCURY                                    ###
-###                                                                                         ###
-### @author Piero Orderique                                                                 ###
+###     TESTING BACKEND FUNCTIONS
 ###############################################################################################
 
-# from selenium import webdriver 
 # import pandas as pd
 # import backendFunctions as bf
 
-PORTFOLIO_DATA_STORE_LOC = "C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortofilo.csv"
-TRADING_VIEW_URL = "https://www.tradingview.com/"
-YAHOO_FINANCE_URL = "https://finance.yahoo.com/"
-DIVIDER = "-----------------------------------------------------------"
+# PORTFOLIO_DATA_STORE_LOC = "C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortofilo.csv"
+# YAHOO_FINANCE_URL = "https://finance.yahoo.com/"
+# DIVIDER = "-----------------------------------------------------------"
 
-#USER INPUT
-usersWebsite = YAHOO_FINANCE_URL
-username = "jakeowens107@gmail.com"
-password = "Swimming1!"
-#portfolio = "Primary"
+# #USER INPUT
+# usersWebsite = YAHOO_FINANCE_URL
+# username = "jakeowens107@gmail.com"
+# password = "Swimming1!"
+# #portfolio = "Primary"
 
 # if bf.user_signed_in(usersWebsite,username,password):
 #     print(DIVIDER+"\nCollecting Data...")
@@ -35,11 +31,12 @@ password = "Swimming1!"
 #TODO Have the names of the stocks that users written on a file so that it is stored and read from there 
         #Have loaded stocks displayed and ask if they want to remove/add stocks to their list
 
+###############################################################################################
+###     TESTING OTHER
+###############################################################################################
+with open('data/previouslyLoaded.txt', 'r') as file1:
+        previouslyLoaded = file1.read()
+        print(previouslyLoaded)
 
-#test:
-import pandas as pd
-df = pd.read_csv("C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortfolio.csv")
-df['1yr Est %Gain'] = df['1yr Est']/df['Last Price'] - 1
-pd.set_option("display.max_rows", None, "display.max_columns", None)
-pd.options.display.float_format = "{:,.2f}".format
-print("%a")
+print(bool(previouslyLoaded))
+print(bool("gasd"))

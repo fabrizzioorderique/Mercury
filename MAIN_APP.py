@@ -7,7 +7,7 @@
 ###############################################################################################################
 
 import pandas as pd
-from tkinter import Tk, Label, Entry, PhotoImage, Button, filedialog, messagebox, scrolledtext, Text,INSERT
+from tkinter import Tk, Label, Entry, PhotoImage, Button, filedialog, messagebox, scrolledtext, Text, INSERT, BOTH, RIGHT
 from tkinter.ttk import Progressbar, Combobox
 
 YAHOO_FINANCE_URL = "https://finance.yahoo.com/"
@@ -16,10 +16,10 @@ YAHOO_FINANCE_URL = "https://finance.yahoo.com/"
 usersWebsite = YAHOO_FINANCE_URL
 username = "jakeowens107@gmail.com"
 password = "Swimming1!"
-filePath = ""
+filePath = "data/myPortfolio.csv"
 #portfolio = "Primary"
 
-print("App Started.\n")
+print("\nApp Started.\n")
 
 #################   MAIN GUI    ##################
 DARK_BLUE = '#09173b'
@@ -71,27 +71,35 @@ def startSignInPage():
 
 def directoryPage():
     #window
-    directoryPage = Tk()
-    directoryPage.title('Select Directory Page')
-    directoryPage.geometry('440x50')
+    directoryWindow = Tk()
+    directoryWindow.title('Mercury Data')
+    directoryWindow.geometry('440x100')
+    directoryWindow.config(bg = DARK_BLUE)
     #window Label
-    instructions = "Select a Directory to Store Data:"
-    titleLabel = Label(directoryPage, text=instructions, font=("Times New Roman", 14),bg='white',fg='black') 
-    titleLabel.grid(column = 0, row=0, padx=3,pady=5)
-    #path selector button
-    def chooseDir():
-        global filePath
-        filePath = filedialog.askdirectory()
-        filePath += "/myPortfolio.csv"
-        dirButton.destroy()
-        titleLabel.config(font=("Times New Roman",9),text="Market Data will be stored in\n"+filePath)
-        def nextButton():
-            directoryPage.destroy()
+    instructions = "Use Existing Data or Load Data from Website?"
+    titleLabel = Label(directoryWindow, text=instructions, font=("Times New Roman", 14),bg=DARK_BLUE,fg=BRIGHT_ORANGE)
+    titleLabel.pack(fill=BOTH,pady=10)
+    #checks if user has used application before:
+    with open('data/previouslyLoaded.txt', 'r') as file1:
+        previouslyLoaded = file1.read()
+    if not bool(previouslyLoaded):
+        with open('data/previouslyLoaded.txt', 'w') as file1:
+            file1.write("Data Has Been Previously Loaded")
+        directoryWindow.destroy()
+        loadDataPage()
+    else:
+        def loadData():
+            directoryWindow.destroy()
             loadDataPage()
-        nextButton = Button(directoryPage,text="Next >",font=("Arial",9),command=nextButton)
-        nextButton.grid(column=1,row=0,padx=10,pady=5)
-    dirButton = Button(directoryPage,text="Choose Directory",font=("Arial",9),command=chooseDir)
-    dirButton.grid(column=1,row=0,padx=10,pady=5)
+        loadButton = Button(directoryWindow,text="Load Current Data",font=("Arial",9),command=loadData)
+        loadButton.pack(side=RIGHT,expand=1)
+        def usePreviousData():
+            directoryWindow.destroy()
+            portfolioPage(pd.read_csv(filePath))
+        nextButton = Button(directoryWindow,text="Use Previous Data",font=("Arial",9),command=usePreviousData)
+        nextButton.pack(side = RIGHT,expand=1)
+
+    # directoryPage.mainloop()
 
 def loadDataPage():
     #window
@@ -106,21 +114,17 @@ def loadDataPage():
     loadingBar = Progressbar(loadingPage, length=300)
     loadingBar.grid(column=0,row=1,padx=12,pady=10)
     def bar():
-        from time import sleep
-        global filePath
-        loadingBar['value']=20
-        sleep(1)
-        loadingBar['value']=50
         import backendFunctions as bf
+        from time import sleep
+        loadingBar['value']=20
         if bf.user_signed_in(usersWebsite,username,password):
             sleep(1)
-            loadingBar['value']=80
+            loadingBar['value']=50
             dict_main = bf.readDataToDictionary()           
-            sleep(1)
-            loadingBar['value']=100
-            sleep(1)
             #makes and saves df
             if len(dict_main) != 0:
+                sleep(1)
+                loadingBar['value']=80
                 df = pd.DataFrame(dict_main)
                 #pre analysis setup:
                 for attribute in df.columns:
@@ -133,10 +137,10 @@ def loadDataPage():
                 loadingPage.destroy()
                 portfolioPage(df)
             else:
-                loadingPage.destroy()
+                # loadingPage.destroy()
                 messagebox.askretrycancel("Data Loading Error.")
         else:
-            loadingPage.destroy()
+            # loadingPage.destroy()
             messagebox.askretrycancel("Sign in Error","Data Collection Failed.")
     bar()
 
@@ -194,9 +198,10 @@ def portfolioPage(df):
             df.plot(kind=kind,x=xLabel,y=yLabel, legend=True, ax=ax)
 
     combo.bind("<<ComboboxSelected>>", comboFunc)
-    portfolioWindow.mainloop()
+    # portfolioWindow.mainloop()
  
 app = MercuryApp()
+# directoryPage()
 # startSignInPage()
 # portfolioPage(pd.read_csv("C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortfolio.csv"))
 
@@ -208,3 +213,4 @@ app = MercuryApp()
     #use os if needed to get working directory
     #add total invested on portfolio chart
     #different portfolio functionality?
+    ###DIRECTORYPAGE - load only if user had not loaded before
