@@ -18,7 +18,6 @@ filePath = ""
 #portfolio = "Primary"
 
 print("App Started.\n")
-#import backendFunctions as bf # import when ready to call funcitons!
 
 #################   MAIN GUI    ##################
 DARK_BLUE = '#09173b'
@@ -103,7 +102,6 @@ def loadDataPage():
     def bar():
         from time import sleep
         global filePath
-        print("Dircectory from global :",filePath)
         loadingBar['value']=20
         sleep(1)
         loadingBar['value']=50
@@ -117,17 +115,19 @@ def loadDataPage():
             sleep(1)
             #makes and saves df
             if len(dict_main) != 0:
-                df_main = pd.DataFrame(dict_main)
+                df = pd.DataFrame(dict_main)
                 #pre analysis setup:
-                for attribute in df_main.columns:
+                pd.options.display.float_format = "{:,.2f}".format
+                for attribute in df.columns:
                     if attribute not in ['Ticker','Company Name']:
-                        df_main[attribute] = df_main[attribute].str.replace(',','').str.replace("M",'').str.replace("%",'').str.replace('+','').astype(float)
-                print("Dircectory that df is being saved to :",filePath)
-                df_main.to_csv(filePath)
+                        df[attribute] = df[attribute].str.replace(',','').str.replace("M",'').str.replace("%",'').str.replace('+','').astype(float)
+                df['1yr Est Profit'] = df['1yr Est'] - df['Last Price']
+                df['1yr Est %Gain'] = df['1yr Est']/df['Last Price'] - 1
+                df.to_csv(filePath)
                 pd.set_option("display.max_rows", None, "display.max_columns", None)
-                print(df_main)
+                print(df)
                 loadingPage.destroy()
-                portfolioPage(df_main)
+                portfolioPage(df)
             else:
                 loadingPage.destroy()
                 messagebox.askretrycancel("Data Loading Error.")
@@ -160,35 +160,38 @@ def portfolioPage(df):
     scroll.config(state='disabled')
 
     #choose/display chart
-    comboValues = ['Select a Chart','BAR| Stocks by Last Price','BAR| Stocks by Total Equity']
+    comboValues = ['Select a Chart','BAR| Stocks by Last Price','BAR| Stocks by Total Equity','BAR| Stocks by Shares','BAR| Stocks by Volume [M]',
+                    'BAR| Stocks by Total Change','BAR| Stocks by 1yr Est','BAR| Stocks by 1yr Est Profit','BAR| Stocks by 1yr Est %Gain']
     combo = Combobox(portfolioWindow,values=comboValues,state="readonly",width=40)
     combo.place(relx=0.16,rely=0.16)
     combo.current(0)
     def comboFunc(event):
         import matplotlib.pyplot as plt
         from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-        #extracts info from presented selection
         selection = combo.get()
-        chartTitle = selection[selection.index(" ")+1:]
-        kind = selection[:selection.index("|")].lower()
-        xLabel = chartTitle[:chartTitle.index(" ")]
-        if xLabel == "Stocks":
-            xLabel = "Ticker"
-        yLabel = chartTitle[chartTitle.index("by ")+3:]
-        #starts embedded plot configuration
-        figure = plt.Figure(figsize=(8,5.8), dpi=90)
-        figure.subplots_adjust(top = 0.94)
-        ax = figure.add_subplot(111)
-        ax.set_title(chartTitle)
-        chart_type = FigureCanvasTkAgg(figure, portfolioWindow)
-        chart_type.get_tk_widget().place(relx=0.05,rely=0.2)
-        toolbar = NavigationToolbar2Tk(chart_type, portfolioWindow)
-        toolbar.place_configure()
         if selection != 'Select a Chart':
+            #extracts info from presented selection
+            chartTitle = selection[selection.index(" ")+1:]
+            kind = selection[:selection.index("|")].lower()
+            xLabel = chartTitle[:chartTitle.index(" ")]
+            if xLabel == "Stocks":
+                xLabel = "Ticker"
+            yLabel = chartTitle[chartTitle.index("by ")+3:]
+            #starts embedded plot configuration
+            figure = plt.Figure(figsize=(8,5.8), dpi=90)
+            figure.subplots_adjust(top = 0.94)
+            ax = figure.add_subplot(111)
+            ax.set_title(chartTitle)
+            chart_type = FigureCanvasTkAgg(figure, portfolioWindow)
+            chart_type.get_tk_widget().place(relx=0.05,rely=0.2)
+                # toolbar = NavigationToolbar2Tk(chart_type, portfolioWindow)
+                # toolbar.place_configure()
+            #plot chart
             df.plot(kind=kind,x=xLabel,y=yLabel, legend=True, ax=ax)
         #TODO
         #put icons and logos in a folder and have them read from there. Save myPortfolio to a local folder named Data
             #use os if needed to get working directory
+        #add total invested on portfolio chart
 
     combo.bind("<<ComboboxSelected>>", comboFunc)
     portfolioWindow.mainloop()
