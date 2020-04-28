@@ -35,6 +35,7 @@ def startSignInPage():
     signInWindow.title('Mercury Sign In Page')
     signInWindow.geometry('600x350')
     signInWindow.config(bg=DARK_BLUE)
+    signInWindow.wm_iconbitmap('images/mercuryLogoIco.ico')
     #window Label
     titleLabel = Label(signInWindow, text="Project Mercury", font=("Times New Roman Bold", 30),bg=DARK_BLUE,fg='white')
     titleLabel.grid(column=0, row=0, padx=13,pady=10)
