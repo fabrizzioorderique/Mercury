@@ -1,8 +1,10 @@
-###############################################################################################
-###                                   PROJECT MERCURY GUI                                   ###
-###                                                                                         ###
-### @author Piero Orderique                                                                 ###
-###############################################################################################
+###############################################################################################################
+###                                                   PROJECT                                               ###
+###                                                   MERCURY                                               ###
+###                                                                                                         ###
+###     Version 1.5                                                                                         ###
+###     @author Piero Orderique                                                                             ###
+###############################################################################################################
 
 import pandas as pd
 from tkinter import Tk, Label, Entry, PhotoImage, Button, filedialog, messagebox, scrolledtext, Text,INSERT
@@ -23,6 +25,10 @@ print("App Started.\n")
 DARK_BLUE = '#09173b'
 BRIGHT_ORANGE = '#d69704'
 
+class MercuryApp():
+    def __init__ (self):
+        startSignInPage()
+
 def startSignInPage():
     #window
     signInWindow = Tk()
@@ -30,8 +36,8 @@ def startSignInPage():
     signInWindow.geometry('600x350')
     signInWindow.config(bg=DARK_BLUE)
     #window Label
-    titleLabel = Label(signInWindow, text="Project Mercury", font=("Times New Roman Bold", 30),bg=DARK_BLUE,fg='white') #create object
-    titleLabel.grid(column=0, row=0, padx=13,pady=10) #set it's position
+    titleLabel = Label(signInWindow, text="Project Mercury", font=("Times New Roman Bold", 30),bg=DARK_BLUE,fg='white')
+    titleLabel.grid(column=0, row=0, padx=13,pady=10)
 
     #logo
     mercuryLogo = PhotoImage(file = "C:\\Users\\fabri\\OneDrive\\Documents\\web-bot\\mercuryLogo.png")
@@ -47,9 +53,9 @@ def startSignInPage():
     usrnmeText.focus()
     #password
     passwordLbl = Label(signInWindow,text="Password:",font=("Arial Bold",13),bg=BRIGHT_ORANGE)
-    passwordLbl.place(relx = 0.55,rely = 0.56) #grid(column=0,row=1,pady=30)
+    passwordLbl.place(relx = 0.55,rely = 0.56) 
     passwordText = Entry(signInWindow,width=30)
-    passwordText.insert(9,password)
+    passwordText.insert(9,password) #DELETE THIS when multiple accounts are supported 
     passwordText.place(relx = 0.55, rely = 0.66) 
 
     #sign in button
@@ -69,14 +75,13 @@ def directoryPage():
     directoryPage.geometry('440x50')
     #window Label
     instructions = "Select a Directory to Store Data:"
-    titleLabel = Label(directoryPage, text=instructions, font=("Times New Roman", 14),bg='white',fg='black') #create object
-    titleLabel.grid(column = 0, row=0, padx=3,pady=5) #place(relx=0.09,rely=0.2) 
+    titleLabel = Label(directoryPage, text=instructions, font=("Times New Roman", 14),bg='white',fg='black') 
+    titleLabel.grid(column = 0, row=0, padx=3,pady=5)
     #path selector button
     def chooseDir():
         global filePath
         filePath = filedialog.askdirectory()
         filePath += "/myPortfolio.csv"
-        print("Directory chosen: ",filePath) ###
         dirButton.destroy()
         titleLabel.config(font=("Times New Roman",9),text="Market Data will be stored in\n"+filePath)
         def nextButton():
@@ -117,15 +122,13 @@ def loadDataPage():
             if len(dict_main) != 0:
                 df = pd.DataFrame(dict_main)
                 #pre analysis setup:
-                pd.options.display.float_format = "{:,.2f}".format
                 for attribute in df.columns:
                     if attribute not in ['Ticker','Company Name']:
                         df[attribute] = df[attribute].str.replace(',','').str.replace("M",'').str.replace("%",'').str.replace('+','').astype(float)
                 df['1yr Est Profit'] = df['1yr Est'] - df['Last Price']
                 df['1yr Est %Gain'] = df['1yr Est']/df['Last Price'] - 1
+                pd.options.display.float_format = "{:,.2f}".format
                 df.to_csv(filePath)
-                pd.set_option("display.max_rows", None, "display.max_columns", None)
-                print(df)
                 loadingPage.destroy()
                 portfolioPage(df)
             else:
@@ -188,19 +191,18 @@ def portfolioPage(df):
                 # toolbar.place_configure()
             #plot chart
             df.plot(kind=kind,x=xLabel,y=yLabel, legend=True, ax=ax)
-        #TODO
-        #put icons and logos in a folder and have them read from there. Save myPortfolio to a local folder named Data
-            #use os if needed to get working directory
-        #add total invested on portfolio chart
 
     combo.bind("<<ComboboxSelected>>", comboFunc)
-    portfolioWindow.mainloop()
+    # portfolioWindow.mainloop()
  
+app = MercuryApp()
 # startSignInPage()
-portfolioPage(pd.read_csv("C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortfolio.csv"))
-# selection = 'Stocks by Last Price'
+# portfolioPage(pd.read_csv("C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortfolio.csv"))
 
-
-
-#TODO Have the names of the stocks that users written on a file so that it is stored and read from there 
-        #Have loaded stocks displayed and ask if they want to remove/add stocks to their list
+#TODO 
+    #Have the names of the stocks that users written on a file so that it is stored and read from there 
+    #Have loaded stocks displayed and ask if they want to remove/add stocks to their list
+    #Add functionality to messagebox.askretrycancel() in bar() inloadDataPage()
+    #put icons and logos in a folder and have them read from there. Save myPortfolio to a local folder named Data
+    #use os if needed to get working directory
+    #add total invested on portfolio chart

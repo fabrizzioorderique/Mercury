@@ -130,12 +130,5 @@ def readDataToDictionary():
 def getTotalInvested():
     return totalInvested
 
-# #for testing code:
-# driver.close()
-# #test:
-# import pandas as pd
-# df = pd.read_csv("C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortfolio.csv")
-# df['1yr Est %Gain'] = df['1yr Est']/df['Last Price'] - 1
-# pd.set_option("display.max_rows", None, "display.max_columns", None)
-# pd.options.display.float_format = "{:,.2f}".format
-# print(df)
+#TODO
+    #once retry buttons enabled on main app, take out sleep() methods and see if there is a difference
