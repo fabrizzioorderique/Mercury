@@ -11,4 +11,6 @@ Therefore, PROJECT MERCURY is here to help investors visualize their individuali
 portfolio by signing into their Yahoo Finance account, retrieving current market data, and 
 allowing users to visualize that data to notice trends and see what stocks they can afford.
 
-Version 1.0 finished 04/25/2020 11:55pm
+Version 1.0 finished 04/25/2020 11:55 pm
+Version 1.5 finished 04/28/2020 09:02 am
+Version 1.7 finished 04/28/2020 11:37 pm

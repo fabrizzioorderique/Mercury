@@ -7,19 +7,22 @@
 ###############################################################################################################
 
 import pandas as pd
-from tkinter import Tk, Label, Entry, PhotoImage, Button, filedialog, messagebox, scrolledtext, Text,INSERT
+from tkinter import Tk, Label, Entry, PhotoImage, Button, filedialog, messagebox, scrolledtext, Text, INSERT, BOTH, RIGHT
 from tkinter.ttk import Progressbar, Combobox
 
 YAHOO_FINANCE_URL = "https://finance.yahoo.com/"
 
 #USER INPUT
-usersWebsite = YAHOO_FINANCE_URL
 username = "jakeowens107@gmail.com"
 password = "Swimming1!"
-filePath = ""
+#Knowns
+usersWebsite = YAHOO_FINANCE_URL
+filePath = "data/myPortfolio.csv"
+totalInvested = 0
+
 #portfolio = "Primary"
 
-print("App Started.\n")
+print("\nApp Started.\n")
 
 #################   MAIN GUI    ##################
 DARK_BLUE = '#09173b'
@@ -35,14 +38,15 @@ def startSignInPage():
     signInWindow.title('Mercury Sign In Page')
     signInWindow.geometry('600x350')
     signInWindow.config(bg=DARK_BLUE)
+    signInWindow.wm_iconbitmap('images/mercuryLogoIcon.ico')
     #window Label
     titleLabel = Label(signInWindow, text="Project Mercury", font=("Times New Roman Bold", 30),bg=DARK_BLUE,fg='white')
     titleLabel.grid(column=0, row=0, padx=13,pady=10)
 
     #logo
-    mercuryLogo = PhotoImage(file = "C:\\Users\\fabri\\OneDrive\\Documents\\web-bot\\mercuryLogo.png")
+    mercuryLogo = PhotoImage(file = 'images/mercuryLogo.png')
     logoLbl = Label(image=mercuryLogo)
-    logoLbl.place(relx=0.1, rely=0.2)
+    logoLbl.place(relx=0.04, rely=0.2)
 
     #username
     usrnmeLbl = Label(signInWindow,text="Username:",font=("Arial Bold",13),bg=BRIGHT_ORANGE)
@@ -70,27 +74,36 @@ def startSignInPage():
 
 def directoryPage():
     #window
-    directoryPage = Tk()
-    directoryPage.title('Select Directory Page')
-    directoryPage.geometry('440x50')
+    directoryWindow = Tk()
+    directoryWindow.title('Mercury Data')
+    directoryWindow.geometry('440x100')
+    directoryWindow.config(bg = DARK_BLUE)
+    directoryWindow.wm_iconbitmap('images/mercuryLogoIcon.ico')
     #window Label
-    instructions = "Select a Directory to Store Data:"
-    titleLabel = Label(directoryPage, text=instructions, font=("Times New Roman", 14),bg='white',fg='black') 
-    titleLabel.grid(column = 0, row=0, padx=3,pady=5)
-    #path selector button
-    def chooseDir():
-        global filePath
-        filePath = filedialog.askdirectory()
-        filePath += "/myPortfolio.csv"
-        dirButton.destroy()
-        titleLabel.config(font=("Times New Roman",9),text="Market Data will be stored in\n"+filePath)
-        def nextButton():
-            directoryPage.destroy()
+    instructions = "Use Existing Data or Load Data from Website?"
+    titleLabel = Label(directoryWindow, text=instructions, font=("Times New Roman", 14),bg=DARK_BLUE,fg=BRIGHT_ORANGE)
+    titleLabel.pack(fill=BOTH,pady=10)
+    #checks if user has used application before:
+    with open('data/previouslyLoaded.txt', 'r') as file1:
+        previouslyLoaded = file1.read()
+    if not bool(previouslyLoaded):
+        with open('data/previouslyLoaded.txt', 'w') as file1:
+            file1.write("Data Has Been Previously Loaded")
+        directoryWindow.destroy()
+        loadDataPage()
+    else:
+        def loadData():
+            directoryWindow.destroy()
             loadDataPage()
-        nextButton = Button(directoryPage,text="Next >",font=("Arial",9),command=nextButton)
-        nextButton.grid(column=1,row=0,padx=10,pady=5)
-    dirButton = Button(directoryPage,text="Choose Directory",font=("Arial",9),command=chooseDir)
-    dirButton.grid(column=1,row=0,padx=10,pady=5)
+        loadButton = Button(directoryWindow,text="Load Current Data",font=("Arial",9),command=loadData)
+        loadButton.pack(side=RIGHT,expand=1)
+        def usePreviousData():
+            directoryWindow.destroy()
+            portfolioPage(pd.read_csv(filePath))
+        nextButton = Button(directoryWindow,text="Use Previous Data",font=("Arial",9),command=usePreviousData)
+        nextButton.pack(side = RIGHT,expand=1)
+
+    # directoryPage.mainloop()
 
 def loadDataPage():
     #window
@@ -98,6 +111,7 @@ def loadDataPage():
     loadingPage.title('Data Collection Page')
     loadingPage.geometry('385x105')
     loadingPage.config(bg=DARK_BLUE)
+    loadingPage.wm_iconbitmap('images/mercuryLogoIcon.ico')
     #window label
     titleLabel = Label(loadingPage, text="Loading Data...", font=("Times New Roman Bold", 14),bg=BRIGHT_ORANGE,fg='black') #create object
     titleLabel.grid(column = 0, row=0, padx=12,pady=10)
@@ -105,21 +119,18 @@ def loadDataPage():
     loadingBar = Progressbar(loadingPage, length=300)
     loadingBar.grid(column=0,row=1,padx=12,pady=10)
     def bar():
-        from time import sleep
-        global filePath
-        loadingBar['value']=20
-        sleep(1)
-        loadingBar['value']=50
         import backendFunctions as bf
+        from time import sleep
+        global totalInvested
+        loadingBar['value']=20
         if bf.user_signed_in(usersWebsite,username,password):
             sleep(1)
-            loadingBar['value']=80
+            loadingBar['value']=50
             dict_main = bf.readDataToDictionary()           
-            sleep(1)
-            loadingBar['value']=100
-            sleep(1)
             #makes and saves df
             if len(dict_main) != 0:
+                sleep(1)
+                loadingBar['value']=80
                 df = pd.DataFrame(dict_main)
                 #pre analysis setup:
                 for attribute in df.columns:
@@ -129,13 +140,14 @@ def loadDataPage():
                 df['1yr Est %Gain'] = df['1yr Est']/df['Last Price'] - 1
                 pd.options.display.float_format = "{:,.2f}".format
                 df.to_csv(filePath)
+                totalInvested = bf.getTotalInvested()
                 loadingPage.destroy()
                 portfolioPage(df)
             else:
-                loadingPage.destroy()
+                # loadingPage.destroy()
                 messagebox.askretrycancel("Data Loading Error.")
         else:
-            loadingPage.destroy()
+            # loadingPage.destroy()
             messagebox.askretrycancel("Sign in Error","Data Collection Failed.")
     bar()
 
@@ -145,27 +157,31 @@ def portfolioPage(df):
     portfolioWindow.title('Portfolio Page')
     portfolioWindow.geometry('1120x700')
     portfolioWindow.config(bg=DARK_BLUE)
-    portfolioWindow.wm_iconbitmap('mercuryLogoIco.ico')
+    portfolioWindow.wm_iconbitmap('images/mercuryLogoIcon.ico')
 
     #labels
     lbl_main = Label(text="Your Portfolio", font=("Times New Roman",42),bg=BRIGHT_ORANGE)
     lbl2 = Label(text="Choose Display:", font=("Times New Roman",12),bg=BRIGHT_ORANGE)
-    lbl3 = Label(text="My Stocks", font=("Times New Roman",20),bg=BRIGHT_ORANGE)
+    lbl3 = Label(text="Total Invested:", font=("Times New Roman",20),bg=BRIGHT_ORANGE)
+    lbl4 = Label(text=str(totalInvested), font=("Times New Roman",26),bg='white')
+    lbl5 = Label(text="My Stocks", font=("Times New Roman",20),bg=BRIGHT_ORANGE)
     lbl_main.place(relx=0.05,rely=0.03)
     lbl2.place(relx=0.05,rely=0.16)
-    lbl3.place(relx=0.73,rely=0.08)
+    lbl3.place(relx=0.73,rely=0.16)
+    lbl4.place(relx=0.73,rely=0.24)
+    lbl5.place(relx=0.73,rely=0.38)
 
     #show stocks list
     portfolio_display_df = df[['Ticker','Last Price','Shares']]   
-    scroll = scrolledtext.ScrolledText(portfolioWindow,width=30,height=34)
-    scroll.place(relx=0.73,rely=0.15)
+    scroll = scrolledtext.ScrolledText(portfolioWindow,width=30,height=22)
+    scroll.place(relx=0.73,rely=0.45)
     scroll.insert(INSERT,portfolio_display_df.to_string())
     scroll.config(state='disabled')
 
     #choose/display chart
     comboValues = ['Select a Chart','BAR| Stocks by Last Price','BAR| Stocks by Total Equity','BAR| Stocks by Shares','BAR| Stocks by Volume [M]',
                     'BAR| Stocks by Total Change','BAR| Stocks by 1yr Est','BAR| Stocks by 1yr Est Profit','BAR| Stocks by 1yr Est %Gain']
-    combo = Combobox(portfolioWindow,values=comboValues,state="readonly",width=40)
+    combo = Combobox(portfolioWindow,values=comboValues,state="readonly",width=32)
     combo.place(relx=0.16,rely=0.16)
     combo.current(0)
     def comboFunc(event):
@@ -193,16 +209,13 @@ def portfolioPage(df):
             df.plot(kind=kind,x=xLabel,y=yLabel, legend=True, ax=ax)
 
     combo.bind("<<ComboboxSelected>>", comboFunc)
-    # portfolioWindow.mainloop()
+    portfolioWindow.mainloop()
  
 app = MercuryApp()
+# directoryPage()
 # startSignInPage()
 # portfolioPage(pd.read_csv("C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortfolio.csv"))
 
 #TODO 
-    #Have the names of the stocks that users written on a file so that it is stored and read from there 
-    #Have loaded stocks displayed and ask if they want to remove/add stocks to their list
-    #Add functionality to messagebox.askretrycancel() in bar() inloadDataPage()
-    #put icons and logos in a folder and have them read from there. Save myPortfolio to a local folder named Data
-    #use os if needed to get working directory
-    #add total invested on portfolio chart
+    #add "Chart displayed here pic in empty space in portfolio page"
+    #different portfolio functionality?
