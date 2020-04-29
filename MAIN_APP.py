@@ -46,7 +46,7 @@ def startSignInPage():
     #logo
     mercuryLogo = PhotoImage(file = 'images/mercuryLogo.png')
     logoLbl = Label(image=mercuryLogo)
-    logoLbl.place(relx=0.1, rely=0.2)
+    logoLbl.place(relx=0.04, rely=0.2)
 
     #username
     usrnmeLbl = Label(signInWindow,text="Username:",font=("Arial Bold",13),bg=BRIGHT_ORANGE)
@@ -209,13 +209,11 @@ def portfolioPage(df):
     combo.bind("<<ComboboxSelected>>", comboFunc)
     portfolioWindow.mainloop()
  
-# app = MercuryApp()
+app = MercuryApp()
 # directoryPage()
 # startSignInPage()
-portfolioPage(pd.read_csv("C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortfolio.csv"))
+# portfolioPage(pd.read_csv("C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortfolio.csv"))
 
 #TODO 
-    #Add functionality to messagebox.askretrycancel() in bar() inloadDataPage()
-    #add total invested on portfolio chart
     #add "Chart displayed here pic in empty space in portfolio page"
     #different portfolio functionality?
