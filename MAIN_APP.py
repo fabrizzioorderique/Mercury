@@ -38,7 +38,7 @@ def startSignInPage():
     signInWindow.title('Mercury Sign In Page')
     signInWindow.geometry('600x350')
     signInWindow.config(bg=DARK_BLUE)
-    signInWindow.wm_iconbitmap('images/mercuryLogoIco.ico')
+    signInWindow.wm_iconbitmap('images/mercuryLogoIcon.ico')
     #window Label
     titleLabel = Label(signInWindow, text="Project Mercury", font=("Times New Roman Bold", 30),bg=DARK_BLUE,fg='white')
     titleLabel.grid(column=0, row=0, padx=13,pady=10)
@@ -78,6 +78,7 @@ def directoryPage():
     directoryWindow.title('Mercury Data')
     directoryWindow.geometry('440x100')
     directoryWindow.config(bg = DARK_BLUE)
+    directoryWindow.wm_iconbitmap('images/mercuryLogoIcon.ico')
     #window Label
     instructions = "Use Existing Data or Load Data from Website?"
     titleLabel = Label(directoryWindow, text=instructions, font=("Times New Roman", 14),bg=DARK_BLUE,fg=BRIGHT_ORANGE)
@@ -110,6 +111,7 @@ def loadDataPage():
     loadingPage.title('Data Collection Page')
     loadingPage.geometry('385x105')
     loadingPage.config(bg=DARK_BLUE)
+    loadingPage.wm_iconbitmap('images/mercuryLogoIcon.ico')
     #window label
     titleLabel = Label(loadingPage, text="Loading Data...", font=("Times New Roman Bold", 14),bg=BRIGHT_ORANGE,fg='black') #create object
     titleLabel.grid(column = 0, row=0, padx=12,pady=10)
@@ -155,7 +157,7 @@ def portfolioPage(df):
     portfolioWindow.title('Portfolio Page')
     portfolioWindow.geometry('1120x700')
     portfolioWindow.config(bg=DARK_BLUE)
-    portfolioWindow.wm_iconbitmap('images/mercuryLogoIco.ico')
+    portfolioWindow.wm_iconbitmap('images/mercuryLogoIcon.ico')
 
     #labels
     lbl_main = Label(text="Your Portfolio", font=("Times New Roman",42),bg=BRIGHT_ORANGE)
