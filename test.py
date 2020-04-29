@@ -34,9 +34,8 @@
 ###############################################################################################
 ###     TESTING OTHER
 ###############################################################################################
-with open('data/previouslyLoaded.txt', 'r') as file1:
-        previouslyLoaded = file1.read()
-        print(previouslyLoaded)
-
-print(bool(previouslyLoaded))
-print(bool("gasd"))
+def test():
+        global x
+        x = 3
+test()
+print(x)

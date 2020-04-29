@@ -13,10 +13,13 @@ from tkinter.ttk import Progressbar, Combobox
 YAHOO_FINANCE_URL = "https://finance.yahoo.com/"
 
 #USER INPUT
-usersWebsite = YAHOO_FINANCE_URL
 username = "jakeowens107@gmail.com"
 password = "Swimming1!"
+#Knowns
+usersWebsite = YAHOO_FINANCE_URL
 filePath = "data/myPortfolio.csv"
+totalInvested = 0
+
 #portfolio = "Primary"
 
 print("\nApp Started.\n")
@@ -116,6 +119,7 @@ def loadDataPage():
     def bar():
         import backendFunctions as bf
         from time import sleep
+        global totalInvested
         loadingBar['value']=20
         if bf.user_signed_in(usersWebsite,username,password):
             sleep(1)
@@ -134,6 +138,7 @@ def loadDataPage():
                 df['1yr Est %Gain'] = df['1yr Est']/df['Last Price'] - 1
                 pd.options.display.float_format = "{:,.2f}".format
                 df.to_csv(filePath)
+                totalInvested = bf.getTotalInvested()
                 loadingPage.destroy()
                 portfolioPage(df)
             else:
@@ -155,22 +160,26 @@ def portfolioPage(df):
     #labels
     lbl_main = Label(text="Your Portfolio", font=("Times New Roman",42),bg=BRIGHT_ORANGE)
     lbl2 = Label(text="Choose Display:", font=("Times New Roman",12),bg=BRIGHT_ORANGE)
-    lbl3 = Label(text="My Stocks", font=("Times New Roman",20),bg=BRIGHT_ORANGE)
+    lbl3 = Label(text="Total Invested:", font=("Times New Roman",20),bg=BRIGHT_ORANGE)
+    lbl4 = Label(text=str(totalInvested), font=("Times New Roman",26),bg='white')
+    lbl5 = Label(text="My Stocks", font=("Times New Roman",20),bg=BRIGHT_ORANGE)
     lbl_main.place(relx=0.05,rely=0.03)
     lbl2.place(relx=0.05,rely=0.16)
-    lbl3.place(relx=0.73,rely=0.08)
+    lbl3.place(relx=0.73,rely=0.16)
+    lbl4.place(relx=0.73,rely=0.24)
+    lbl5.place(relx=0.73,rely=0.38)
 
     #show stocks list
     portfolio_display_df = df[['Ticker','Last Price','Shares']]   
-    scroll = scrolledtext.ScrolledText(portfolioWindow,width=30,height=34)
-    scroll.place(relx=0.73,rely=0.15)
+    scroll = scrolledtext.ScrolledText(portfolioWindow,width=30,height=22)
+    scroll.place(relx=0.73,rely=0.45)
     scroll.insert(INSERT,portfolio_display_df.to_string())
     scroll.config(state='disabled')
 
     #choose/display chart
     comboValues = ['Select a Chart','BAR| Stocks by Last Price','BAR| Stocks by Total Equity','BAR| Stocks by Shares','BAR| Stocks by Volume [M]',
                     'BAR| Stocks by Total Change','BAR| Stocks by 1yr Est','BAR| Stocks by 1yr Est Profit','BAR| Stocks by 1yr Est %Gain']
-    combo = Combobox(portfolioWindow,values=comboValues,state="readonly",width=40)
+    combo = Combobox(portfolioWindow,values=comboValues,state="readonly",width=32)
     combo.place(relx=0.16,rely=0.16)
     combo.current(0)
     def comboFunc(event):
@@ -198,19 +207,15 @@ def portfolioPage(df):
             df.plot(kind=kind,x=xLabel,y=yLabel, legend=True, ax=ax)
 
     combo.bind("<<ComboboxSelected>>", comboFunc)
-    # portfolioWindow.mainloop()
+    portfolioWindow.mainloop()
  
-app = MercuryApp()
+# app = MercuryApp()
 # directoryPage()
 # startSignInPage()
-# portfolioPage(pd.read_csv("C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortfolio.csv"))
+portfolioPage(pd.read_csv("C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortfolio.csv"))
 
 #TODO 
-    #Have the names of the stocks that users written on a file so that it is stored and read from there 
-    #Have loaded stocks displayed and ask if they want to remove/add stocks to their list
     #Add functionality to messagebox.askretrycancel() in bar() inloadDataPage()
-    #put icons and logos in a folder and have them read from there. Save myPortfolio to a local folder named Data
-    #use os if needed to get working directory
     #add total invested on portfolio chart
+    #add "Chart displayed here pic in empty space in portfolio page"
     #different portfolio functionality?
-    ###DIRECTORYPAGE - load only if user had not loaded before
