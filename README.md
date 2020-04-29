@@ -1,7 +1,7 @@
-# web-bot
-hosts my Devpost web bot application:
+# Project Mercury
+A Financial Decision Visualization Tool:
 
-web-bot, also known as PROJECT MERCURY, is a desktop applicaiton that is meant to help 
+PROJECT MERCURY is a desktop applicaiton that is meant to help 
 younger users make financial decisions in the stock market. Due to the increase in youth 
 investments made easy through platforms like Robinhood, many young investors are starting 
 to take on the stock market. However, if dealt with irresponsibly, trading on the market 
