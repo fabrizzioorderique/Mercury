@@ -148,7 +148,7 @@ def loadDataPage():
                 portfolioPage(df)
             else:
                 # loadingPage.destroy()
-                messagebox.askretrycancel("Data Loading Error.")
+                messagebox.askretrycancel("Data Loading Error.","Data Collection Failed.")
         else:
             # loadingPage.destroy()
             messagebox.askretrycancel("Sign in Error","Data Collection Failed.")
@@ -241,7 +241,7 @@ app = MercuryApp()
 # portfolioPage(pd.read_csv("C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortfolio.csv"))
 
 #TODO 
-    #add reset option to erase previous data!
+    #add functionality to data loading error
     #for later versions:
         #Navigation Bar
         #different portfolio functionality?
