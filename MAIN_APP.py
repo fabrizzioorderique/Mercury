@@ -159,6 +159,11 @@ def portfolioPage(df):
     portfolioWindow.config(bg=DARK_BLUE)
     portfolioWindow.wm_iconbitmap('images/mercuryLogoIcon.ico')
 
+    #noImage Picture
+    mercuryLogo = PhotoImage(file = 'images/NoChartImage.png')
+    logoLbl = Label(image=mercuryLogo)
+    logoLbl.place(relx=0.05, rely=0.2)
+
     #labels
     lbl_main = Label(text="Your Portfolio", font=("Times New Roman",42),bg=BRIGHT_ORANGE)
     lbl2 = Label(text="Choose Display:", font=("Times New Roman",12),bg=BRIGHT_ORANGE)
@@ -211,11 +216,12 @@ def portfolioPage(df):
     combo.bind("<<ComboboxSelected>>", comboFunc)
     portfolioWindow.mainloop()
  
-app = MercuryApp()
+# app = MercuryApp()
 # directoryPage()
 # startSignInPage()
-# portfolioPage(pd.read_csv("C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortfolio.csv"))
+portfolioPage(pd.read_csv("C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortfolio.csv"))
 
 #TODO 
     #add "Chart displayed here pic in empty space in portfolio page"
     #different portfolio functionality?
+    #be able to read total invested from data
