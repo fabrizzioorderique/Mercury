@@ -234,9 +234,8 @@ def dataRESET():
         remove('data/myPortfolio.csv')
     except:
         pass
-    
 
-dataRESET()
+# dataRESET()
 app = MercuryApp()
 # portfolioPage(pd.read_csv("C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortfolio.csv"))
 

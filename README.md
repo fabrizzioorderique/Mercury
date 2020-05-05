@@ -14,4 +14,5 @@ allowing users to visualize that data to notice trends and see what stocks they 
 Version 1.0 finished 04/25/2020 11:55 pm
 Version 1.5 finished 04/28/2020 09:02 am
 Version 1.7 finished 04/28/2020 11:37 pm
-Version 1.8 started 04/29/2020 9:10 am
+Version 1.8 finished 05/05/2020 11:10 am
+Version 2.0 finished 05/05/2020 03:00 pm
