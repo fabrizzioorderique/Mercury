@@ -2,7 +2,7 @@
 ###                                                   PROJECT                                               ###
 ###                                                   MERCURY                                               ###
 ###                                                                                                         ###
-###     Version 1.8                                                                                         ###
+###     Version 2.0                                                                                         ###
 ###     @author Piero Orderique                                                                             ###
 ###############################################################################################################
 
@@ -223,13 +223,26 @@ def portfolioPage(df):
     combo.bind("<<ComboboxSelected>>", comboFunc)
     portfolioWindow.mainloop()
  
+def dataRESET():
+    from os import remove
+    def clearTextFile(textFile):
+        file = open(textFile,'w')
+        file.close()
+    clearTextFile('data/totalInvestedData.txt')
+    clearTextFile('data/previouslyLoaded.txt')
+    try:
+        remove('data/myPortfolio.csv')
+    except:
+        pass
+    
+
+dataRESET()
 app = MercuryApp()
-# directoryPage()
-# startSignInPage()
 # portfolioPage(pd.read_csv("C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortfolio.csv"))
 
 #TODO 
-    #add "Chart displayed here pic in empty space in portfolio page"
-    #different portfolio functionality?
-    #be able to read total invested from data
     #add reset option to erase previous data!
+    #for later versions:
+        #Navigation Bar
+        #different portfolio functionality?
+    
