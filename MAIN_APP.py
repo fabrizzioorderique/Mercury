@@ -86,8 +86,6 @@ def directoryPage():
     with open('data/previouslyLoaded.txt', 'r') as file1:
         previouslyLoaded = file1.read()
     if not bool(previouslyLoaded):
-        with open('data/previouslyLoaded.txt', 'w') as file1:
-            file1.write("Data Has Been Previously Loaded")
         directoryWindow.destroy()
         loadDataPage()
     else:
@@ -143,6 +141,9 @@ def loadDataPage():
                     with open('data/totalInvestedData.txt', 'w') as file1:
                         file1.write(totalInvested)
                 loadTotalInvested()
+                #updates previously loaded only if data loaded successfully
+                with open('data/previouslyLoaded.txt', 'w') as file1:
+                    file1.write("Data Has Been Previously Loaded")
                 loadingPage.destroy()
                 portfolioPage(df)
             else:
@@ -231,3 +232,4 @@ app = MercuryApp()
     #add "Chart displayed here pic in empty space in portfolio page"
     #different portfolio functionality?
     #be able to read total invested from data
+    #add reset option to erase previous data!
