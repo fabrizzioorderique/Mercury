@@ -18,7 +18,6 @@ password = "Swimming1!"
 #Knowns
 usersWebsite = YAHOO_FINANCE_URL
 filePath = "data/myPortfolio.csv"
-totalInvested = 0
 
 #portfolio = "Primary"
 
@@ -121,7 +120,6 @@ def loadDataPage():
     def bar():
         import backendFunctions as bf
         from time import sleep
-        global totalInvested
         loadingBar['value']=20
         if bf.user_signed_in(usersWebsite,username,password):
             sleep(1)
@@ -140,7 +138,11 @@ def loadDataPage():
                 df['1yr Est %Gain'] = df['1yr Est']/df['Last Price'] - 1
                 pd.options.display.float_format = "{:,.2f}".format
                 df.to_csv(filePath)
-                totalInvested = bf.getTotalInvested()
+                def loadTotalInvested():
+                    totalInvested = bf.getTotalInvested()
+                    with open('data/totalInvestedData.txt', 'w') as file1:
+                        file1.write(totalInvested)
+                loadTotalInvested()
                 loadingPage.destroy()
                 portfolioPage(df)
             else:
@@ -164,11 +166,15 @@ def portfolioPage(df):
     logoLbl = Label(image=mercuryLogo)
     logoLbl.place(relx=0.05, rely=0.2)
 
+    #get total invested
+    with open('data/totalInvestedData.txt', 'r') as file1:
+        totalInvestedShow = file1.read()
+
     #labels
     lbl_main = Label(text="Your Portfolio", font=("Times New Roman",42),bg=BRIGHT_ORANGE)
     lbl2 = Label(text="Choose Display:", font=("Times New Roman",12),bg=BRIGHT_ORANGE)
     lbl3 = Label(text="Total Invested:", font=("Times New Roman",20),bg=BRIGHT_ORANGE)
-    lbl4 = Label(text=str(totalInvested), font=("Times New Roman",26),bg='white')
+    lbl4 = Label(text=str(totalInvestedShow), font=("Times New Roman",26),bg='white')
     lbl5 = Label(text="My Stocks", font=("Times New Roman",20),bg=BRIGHT_ORANGE)
     lbl_main.place(relx=0.05,rely=0.03)
     lbl2.place(relx=0.05,rely=0.16)
@@ -216,10 +222,10 @@ def portfolioPage(df):
     combo.bind("<<ComboboxSelected>>", comboFunc)
     portfolioWindow.mainloop()
  
-# app = MercuryApp()
+app = MercuryApp()
 # directoryPage()
 # startSignInPage()
-portfolioPage(pd.read_csv("C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortfolio.csv"))
+# portfolioPage(pd.read_csv("C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortfolio.csv"))
 
 #TODO 
     #add "Chart displayed here pic in empty space in portfolio page"
