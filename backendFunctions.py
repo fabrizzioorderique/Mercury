@@ -82,39 +82,28 @@ def readDataToDictionary():
 
     global totalInvested
     totalInvested = WebDriverWait(driver,10*WAIT_TIME).until(lambda x: x.find_element_by_xpath("""//*[@id="Lead-3-Portfolios-Proxy"]/main/div[1]/div[1]/div/div[1]/span""")).text
-    print("\n",totalInvested)
+    print("\nTotal in Portfolio: ",totalInvested)
     
     attributeNames = ["Ticker","Company Name","Last Price","Change","%Change","Shares","Cost/Share","Total Equity","Total Change","Total %Change","1yr Est","Volume [M]"]
     attributeLists = []
     for att in attributeNames:
         attributeLists.append([]) #appends and empty list for every attribute 
+        print(att,end=" ")
 
     idx = 1
     while True:
         try:
-            sleep(WAIT_TIME*0.001)
             attributeLists[0].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[1]/a').text) #ticker
-            sleep(WAIT_TIME*0.001)
             attributeLists[1].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[2]').text) #name
-            sleep(WAIT_TIME*0.001)
             attributeLists[2].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[3]/span').text) #lastprice
-            sleep(WAIT_TIME*0.001)
             attributeLists[3].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[4]/span').text) #change
-            sleep(WAIT_TIME*0.001)
             attributeLists[4].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[5]/span').text) #%change
-            sleep(WAIT_TIME*0.001)
             attributeLists[5].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[7]').text) #shares
-            sleep(WAIT_TIME*0.001)
             attributeLists[6].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[8]').text) #cost/share
-            sleep(WAIT_TIME*0.001)
             attributeLists[7].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[9]/span').text) #total equity
-            sleep(WAIT_TIME*0.001)
             attributeLists[8].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[10]/span').text) #total change
-            sleep(WAIT_TIME*0.001)
-            attributeLists[9].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[11]/span').text) #total %change
-            sleep(WAIT_TIME*0.001)                 
-            attributeLists[10].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[12]').text) #1 yr est
-            sleep(WAIT_TIME*0.001)            
+            attributeLists[9].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[11]/span').text) #total %change                 
+            attributeLists[10].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[12]').text) #1 yr est            
             attributeLists[11].append(driver.find_element_by_xpath('//*[@id="pf-detail-table"]/div[1]/table/tbody/tr['+str(idx)+']/td[13]/span').text) #volume
         except:
             print("loop broken at index =",idx)

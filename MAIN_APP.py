@@ -2,7 +2,7 @@
 ###                                                   PROJECT                                               ###
 ###                                                   MERCURY                                               ###
 ###                                                                                                         ###
-###     Version 1.7                                                                                         ###
+###     Version 2.0                                                                                         ###
 ###     @author Piero Orderique                                                                             ###
 ###############################################################################################################
 
@@ -18,7 +18,6 @@ password = "Swimming1!"
 #Knowns
 usersWebsite = YAHOO_FINANCE_URL
 filePath = "data/myPortfolio.csv"
-totalInvested = 0
 
 #portfolio = "Primary"
 
@@ -87,8 +86,6 @@ def directoryPage():
     with open('data/previouslyLoaded.txt', 'r') as file1:
         previouslyLoaded = file1.read()
     if not bool(previouslyLoaded):
-        with open('data/previouslyLoaded.txt', 'w') as file1:
-            file1.write("Data Has Been Previously Loaded")
         directoryWindow.destroy()
         loadDataPage()
     else:
@@ -121,7 +118,6 @@ def loadDataPage():
     def bar():
         import backendFunctions as bf
         from time import sleep
-        global totalInvested
         loadingBar['value']=20
         if bf.user_signed_in(usersWebsite,username,password):
             sleep(1)
@@ -140,12 +136,19 @@ def loadDataPage():
                 df['1yr Est %Gain'] = df['1yr Est']/df['Last Price'] - 1
                 pd.options.display.float_format = "{:,.2f}".format
                 df.to_csv(filePath)
-                totalInvested = bf.getTotalInvested()
+                def loadTotalInvested():
+                    totalInvested = bf.getTotalInvested()
+                    with open('data/totalInvestedData.txt', 'w') as file1:
+                        file1.write(totalInvested)
+                loadTotalInvested()
+                #updates previously loaded only if data loaded successfully
+                with open('data/previouslyLoaded.txt', 'w') as file1:
+                    file1.write("Data Has Been Previously Loaded")
                 loadingPage.destroy()
                 portfolioPage(df)
             else:
                 # loadingPage.destroy()
-                messagebox.askretrycancel("Data Loading Error.")
+                messagebox.askretrycancel("Data Loading Error.","Data Collection Failed.")
         else:
             # loadingPage.destroy()
             messagebox.askretrycancel("Sign in Error","Data Collection Failed.")
@@ -159,11 +162,20 @@ def portfolioPage(df):
     portfolioWindow.config(bg=DARK_BLUE)
     portfolioWindow.wm_iconbitmap('images/mercuryLogoIcon.ico')
 
+    #noImage Picture
+    mercuryLogo = PhotoImage(file = 'images/NoChartImage.png')
+    logoLbl = Label(image=mercuryLogo)
+    logoLbl.place(relx=0.05, rely=0.2)
+
+    #get total invested
+    with open('data/totalInvestedData.txt', 'r') as file1:
+        totalInvestedShow = file1.read()
+
     #labels
     lbl_main = Label(text="Your Portfolio", font=("Times New Roman",42),bg=BRIGHT_ORANGE)
     lbl2 = Label(text="Choose Display:", font=("Times New Roman",12),bg=BRIGHT_ORANGE)
     lbl3 = Label(text="Total Invested:", font=("Times New Roman",20),bg=BRIGHT_ORANGE)
-    lbl4 = Label(text=str(totalInvested), font=("Times New Roman",26),bg='white')
+    lbl4 = Label(text=str(totalInvestedShow), font=("Times New Roman",26),bg='white')
     lbl5 = Label(text="My Stocks", font=("Times New Roman",20),bg=BRIGHT_ORANGE)
     lbl_main.place(relx=0.05,rely=0.03)
     lbl2.place(relx=0.05,rely=0.16)
@@ -211,11 +223,25 @@ def portfolioPage(df):
     combo.bind("<<ComboboxSelected>>", comboFunc)
     portfolioWindow.mainloop()
  
+def dataRESET():
+    from os import remove
+    def clearTextFile(textFile):
+        file = open(textFile,'w')
+        file.close()
+    clearTextFile('data/totalInvestedData.txt')
+    clearTextFile('data/previouslyLoaded.txt')
+    try:
+        remove('data/myPortfolio.csv')
+    except:
+        pass
+
+# dataRESET()
 app = MercuryApp()
-# directoryPage()
-# startSignInPage()
 # portfolioPage(pd.read_csv("C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortfolio.csv"))
 
 #TODO 
-    #add "Chart displayed here pic in empty space in portfolio page"
-    #different portfolio functionality?
+    #add functionality to data loading error
+    #for later versions:
+        #Navigation Bar
+        #different portfolio functionality?
+    
