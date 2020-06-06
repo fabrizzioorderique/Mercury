@@ -236,7 +236,7 @@ def dataRESET():
         pass
 
 # dataRESET()
-app = MercuryApp()
+# app = MercuryApp()
 # portfolioPage(pd.read_csv("C:/Users/fabri/OneDrive/Documents/DasText/csvFiles/myPortfolio.csv"))
 
 #TODO 
@@ -244,4 +244,7 @@ app = MercuryApp()
     #for later versions:
         #Navigation Bar
         #different portfolio functionality?
-    
+
+if __name__ == "__main__":
+    while input("Run Mercury Program?") != 'n':
+        app = MercuryApp()
