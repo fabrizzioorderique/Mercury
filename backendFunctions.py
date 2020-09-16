@@ -1,4 +1,5 @@
-from selenium import webdriver 
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from pynput.keyboard import Key,Controller
 from time import sleep
@@ -6,7 +7,8 @@ from time import sleep
 CHROME_DRIVER_PATH = "C:\\Users\\fabri\\miniconda3\\Lib\\site-packages\\selenium\\webdriver\\chrome\\chromedriver.exe"
 
 WAIT_TIME = 3 #default wait time for pages to load in seconds
-driver = webdriver.Chrome(CHROME_DRIVER_PATH) #main driver
+# driver = webdriver.Chrome(CHROME_DRIVER_PATH) #main driver
+driver = webdriver.Chrome(ChromeDriverManager().install())
 totalInvested = "Data not collected."
 
 def user_signed_in(websiteUrl,USERNAME,PASSWORD):
